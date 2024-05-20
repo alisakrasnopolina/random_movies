@@ -1,0 +1,69 @@
+<resources>
+    <string name="app_name">random_movie</string>
+    <string name="content_description_start_icon">Registration icon</string>
+
+    <!-- Strings used for registration page -->
+    <string name="registration_page_name">Регистрация</string>
+    <string name="registration_page_description">Если у вас еще нет аккаунта, пожалуйста,\nпройдите регистрацию</string>
+    <string name="registration_page_text_layout_name">Имя или никнейм</string>
+    <string name="registration_page_text_layout_email">Почта</string>
+    <string name="registration_page_text_layout_password">Пароль</string>
+    <string name="registration_page_text_layout_button_register">Зарегистрироваться</string>
+    <string name="registration_page_text_layout_login_1">Уже с нами?</string>
+    <string name="registration_page_text_layout_login_2">Пожалуйста, авторизуйтесь в приложении</string>
+    <string name="registration_page_text_layout_button_login">Войти</string>
+
+    <!-- Strings used for authorization page -->
+    <string name="login_page_name">Войти</string>
+    <string name="login_page_description">Чтобы начать использовать приложение,\nпожалуйста, авторизуйтесь.</string>
+    <string name="login_page_text_layout_email">Почта</string>
+    <string name="login_page_text_layout_password">Пароль</string>
+    <string name="login_page_text_layout_button_login">Войти</string>
+    <string name="login_page_text_layout_registered_1">Первый раз здесь?</string>
+    <string name="login_page_text_layout_registered_2">Если у вас еще нет аккаунта, пожалуйста,\nпройдите регистрацию</string>
+    <string name="login_page_text_layout_button_registration">Регистрация</string>
+    <string name="title_activity_find_random_movie">FindRandomMovie</string>
+
+    <!-- Strings used for filter find movie page -->
+    <string name="card_1_fun_title">Смех и радость</string>
+    <string name="card_2_sad_title">Грусть-тоска</string>
+    <string name="card_3_anger_title">Гнев и ярость</string>
+    <string name="card_4_scary_title">Страх и ужас</string>
+    <string name="card_5_anxious_title">Тревога и испуг</string>
+    <string name="card_6_love_title">Любовь-морковь</string>
+    <string name="card_7_dreams_title">Мечты и грезы</string>
+    <string name="card_8_cartoons_title">Бинго-бонго</string>
+    <string name="main_title_mood">Настроение</string>
+    <string name="description_mood">Выберите настроение, и мы подберем\nподходящий случайный фильм</string>
+
+    <!-- Strings used for navigation bar -->
+    <string name="random_movie_title">Случайный</string>
+    <string name="liked_movies_title">Избранное</string>
+    <string name="home_title">Профиль</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Strings used for movie card -->
+    <string name="country_title">Страна</string>
+    <string name="year_title">Год</string>
+    <string name="genre_title">Жанр</string>
+    <string name="director_title">Режиссер</string>
+    <string name="actors_title">В главных ролях</string>
+    <string name="recommendation_button">Рекомендовать</string>
+    <string name="delete_button">Удалить</string>
+
+    <!-- Strings used for liked movies -->
+    <string name="liked_main_title">Избранное</string>
+
+    <!-- Strings used for tabs -->
+    <string name="tab_1">Буду смотреть</string>
+    <string name="tab_2">Просмотрено</string>
+s
+    <!-- Strings used for edit profile -->
+    <string name="title_edit">Редактирование\nпрофиля</string>
+    <string name="button_edit">Редактировать</string>
+    <string name="button_save">Сохранить</string>
+
+    <!-- Strings used for profile -->
+    <string name="button_exit">Выйти</string>
+</resources>

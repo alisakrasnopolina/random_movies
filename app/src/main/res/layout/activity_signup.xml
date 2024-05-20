@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="24dp"
+    tools:context=".SignupActivity">
+
+    <TextView
+        android:id="@+id/registration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="@string/registration_page_name"
+        android:textColor="@color/textColor"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/registration_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/registration_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/registration_page_description"
+        android:textColor="@color/textColor_subtitles"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/signup_name"
+        app:layout_constraintEnd_toEndOf="@+id/registration"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/registration" />
+
+    <EditText
+        android:id="@+id/signup_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="@string/registration_page_text_layout_name"
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registration_text" />
+
+
+    <EditText
+        android:id="@+id/signup_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="1dp"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="@string/registration_page_text_layout_email"
+        android:inputType="textEmailAddress"
+        app:layout_constraintStart_toStartOf="@+id/signup_name"
+        app:layout_constraintTop_toBottomOf="@+id/signup_name" />
+
+    <EditText
+        android:id="@+id/signup_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="@string/registration_page_text_layout_password"
+        android:inputType="textPassword"
+        app:layout_constraintStart_toStartOf="@+id/signup_email"
+        app:layout_constraintTop_toBottomOf="@+id/signup_email" />
+
+
+    <Button
+        android:id="@+id/signup_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="32dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/button_gradient"
+        app:backgroundTint="@null"
+        android:text="@string/registration_page_text_layout_button_register"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signup_password" />
+
+    <TextView
+        android:id="@+id/loginRedirectText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:textSize="24sp"
+        android:textColor="@color/textColor"
+        android:textStyle="bold"
+        android:text="@string/registration_page_text_layout_login_1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signup_button" />
+
+    <TextView
+        android:id="@+id/loginRedirectText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/textColor_subtitles"
+        android:text="@string/registration_page_text_layout_login_2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginRedirectText1" />
+
+    <Button
+        android:id="@+id/loginRedirectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="32dp"
+        android:layout_marginTop="28dp"
+        android:text="@string/registration_page_text_layout_button_login"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loginRedirectText2"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textAllCaps="false"
+        style="?attr/gradientBorderButtonStyle"
+        android:backgroundTint="@null"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "687691777256",
+    "project_id": "random-movie-cbfe6",
+    "storage_bucket": "random-movie-cbfe6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:687691777256:android:41a4d6e4b99514c3d0755d",
+        "android_client_info": {
+          "package_name": "com.example.random_movie"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDGyEIOHgovXDfud90dkNipMAYKgZSqEpU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

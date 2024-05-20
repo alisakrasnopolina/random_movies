@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="metaColor" format="color"/>
+    <attr name="color" format="color"/>
+    <attr name="textColor" format="color"/>
+    <attr name="toolbarColor" format="color"/>
+    <attr name="toolbarIndicator" format="reference"/>
+    <attr name="gradientBorderButtonStyle" format="reference" />
+</resources>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingHorizontal="24dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:id="@+id/profileImg"
+            android:layout_marginTop="40dp"
+            android:src="@drawable/baseline_person_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profileName"
+            android:layout_marginTop="24dp"
+            android:text="Алиса"
+            android:textColor="@color/textColor"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/profileImg"
+            app:layout_constraintStart_toStartOf="@id/profileImg"
+            app:layout_constraintTop_toBottomOf="@id/profileImg"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/profileEmail"
+            android:layout_marginTop="8dp"
+            android:text="vasya@mail.ru"
+            android:textColor="@color/textColor_subtitles"
+            android:textSize="16sp"
+            android:textStyle=""
+            app:layout_constraintEnd_toEndOf="@id/profileName"
+            app:layout_constraintStart_toStartOf="@id/profileName"
+            app:layout_constraintTop_toBottomOf="@id/profileName"/>
+
+        <Button
+            android:id="@+id/edit_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            android:background="@drawable/button_gradient"
+            app:backgroundTint="@null"
+            android:text="@string/button_edit"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:cornerRadius="32dp"
+            app:layout_constraintEnd_toEndOf="@id/profileEmail"
+            app:layout_constraintStart_toStartOf="@id/profileEmail"
+            app:layout_constraintTop_toBottomOf="@id/profileEmail" />
+
+        <Button
+            android:id="@+id/exit_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="32dp"
+            android:layout_marginTop="24dp"
+            style="?attr/gradientBorderButtonStyle"
+            android:text="@string/button_exit"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@id/edit_button"
+            app:layout_constraintStart_toStartOf="@id/edit_button"
+            app:layout_constraintTop_toBottomOf="@id/edit_button" />
+    </LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/bottom_nav_menu"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
