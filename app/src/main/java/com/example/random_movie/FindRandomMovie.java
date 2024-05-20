@@ -375,17 +375,17 @@ public class FindRandomMovie extends AppCompatActivity {
 
         isCardLiked();
 
-        name = settings.getString(MOVIE_NAME,"");
-        genre = settings.getString(MOVIE_GENRE, "");
+        name = settings.getString(MOVIE_NAME,"Name");
+        genre = settings.getString(MOVIE_GENRE, "Genre");
         if (settings.getString(MOVIE_URL, "").equals("")){
             url = "https://bloximages.newyork1.vip.townnews.com/stltoday.com/content/tncms/assets/v3/editorial/3/44/344a8f80-d44a-11e2-81ba-0019bb30f31a/51b9fa6a8d39e.preview-1024.png?crop=1024%2C538%2C0%2C13&resize=1024%2C538&order=crop%2Cresize";
         } else {
-            url = settings.getString(MOVIE_URL, "");
+            url = settings.getString(MOVIE_URL, "https://bloximages.newyork1.vip.townnews.com/stltoday.com/content/tncms/assets/v3/editorial/3/44/344a8f80-d44a-11e2-81ba-0019bb30f31a/51b9fa6a8d39e.preview-1024.png?crop=1024%2C538%2C0%2C13&resize=1024%2C538&order=crop%2Cresize");
         }
-        year = Integer.parseInt(settings.getString(MOVIE_YEAR, ""));
-        length = Integer.parseInt(settings.getString(MOVIE_LENGTH, ""));
-        ratingImdb = Integer.parseInt(settings.getString(MOVIE_RATING, ""));
-        id = Integer.parseInt(settings.getString(MOVIE_ID, ""));
+        year = Integer.parseInt(settings.getString(MOVIE_YEAR, "2000"));
+        length = Integer.parseInt(settings.getString(MOVIE_LENGTH, "111"));
+        ratingImdb = Integer.parseInt(settings.getString(MOVIE_RATING, "9"));
+        id = Integer.parseInt(settings.getString(MOVIE_ID, "0"));
 
 
         Handler uiHandler = new Handler(Looper.getMainLooper());

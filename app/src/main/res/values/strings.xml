@@ -4,7 +4,7 @@
 
     <!-- Strings used for registration page -->
     <string name="registration_page_name">Регистрация</string>
-    <string name="registration_page_description">Если у вас еще нет аккаунта, пожалуйста,\nпройдите регистрацию</string>
+    <string name="registration_page_description">Если у вас еще нет аккаунта, пожалуйста, пройдите регистрацию</string>
     <string name="registration_page_text_layout_name">Имя или никнейм</string>
     <string name="registration_page_text_layout_email">Почта</string>
     <string name="registration_page_text_layout_password">Пароль</string>
@@ -15,12 +15,12 @@
 
     <!-- Strings used for authorization page -->
     <string name="login_page_name">Войти</string>
-    <string name="login_page_description">Чтобы начать использовать приложение,\nпожалуйста, авторизуйтесь.</string>
+    <string name="login_page_description">Чтобы начать использовать приложение, пожалуйста, авторизуйтесь.</string>
     <string name="login_page_text_layout_email">Почта</string>
     <string name="login_page_text_layout_password">Пароль</string>
     <string name="login_page_text_layout_button_login">Войти</string>
     <string name="login_page_text_layout_registered_1">Первый раз здесь?</string>
-    <string name="login_page_text_layout_registered_2">Если у вас еще нет аккаунта, пожалуйста,\nпройдите регистрацию</string>
+    <string name="login_page_text_layout_registered_2">Если у вас еще нет аккаунта, пожалуйста, пройдите регистрацию</string>
     <string name="login_page_text_layout_button_registration">Регистрация</string>
     <string name="title_activity_find_random_movie">FindRandomMovie</string>
 
@@ -34,7 +34,7 @@
     <string name="card_7_dreams_title">Мечты и грезы</string>
     <string name="card_8_cartoons_title">Бинго-бонго</string>
     <string name="main_title_mood">Настроение</string>
-    <string name="description_mood">Выберите настроение, и мы подберем\nподходящий случайный фильм</string>
+    <string name="description_mood">Выберите настроение, и мы подберем подходящий случайный фильм</string>
 
     <!-- Strings used for navigation bar -->
     <string name="random_movie_title">Случайный</string>
