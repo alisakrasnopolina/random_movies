@@ -98,31 +98,6 @@ public class FindRandomMovie extends AppCompatActivity {
     private static final String MOVIE_ID = "id movie";
 
 
-    void isCardLiked () {
-        SharedPreferences preferences_login = getSharedPreferences("login", MODE_PRIVATE);
-        String userID = preferences_login.getString("userID", "");
-
-        database = FirebaseDatabase.getInstance();
-        reference = database.getReference("users/"+userID+"/liked");
-        reference_watched = database.getReference("users/"+userID+"/watched");
-
-        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("film_number"+id)) {
-                    likeButton.setBackgroundResource(R.drawable.liked);
-                } else {
-                    likeButton.setBackgroundResource(R.drawable.like);
-                }
-            }
-
-            public void onCancelled(DatabaseError databaseError) {
-                Log.d("error", "The read failed: " + databaseError.getCode());
-            }
-        });
-    }
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -354,6 +329,31 @@ public class FindRandomMovie extends AppCompatActivity {
             }
         });
     }
+
+    void isCardLiked () {
+        SharedPreferences preferences_login = getSharedPreferences("login", MODE_PRIVATE);
+        String userID = preferences_login.getString("userID", "");
+
+        database = FirebaseDatabase.getInstance();
+        reference = database.getReference("users/"+userID+"/liked");
+        reference_watched = database.getReference("users/"+userID+"/watched");
+
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.hasChild("film_number"+id)) {
+                    likeButton.setBackgroundResource(R.drawable.liked);
+                } else {
+                    likeButton.setBackgroundResource(R.drawable.like);
+                }
+            }
+
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("error", "The read failed: " + databaseError.getCode());
+            }
+        });
+    }
+
     @Override
     protected void onPause(){
         super.onPause();
