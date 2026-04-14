@@ -1,38 +1,34 @@
 package com.example.random_movie;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
-import com.google.firebase.database.ValueEventListener;
+import org.json.JSONObject;
 
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
+import java.io.IOException;
 
-import java.util.Objects;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    EditText loginEmail, loginPassword;
-    Button loginButton, signupRedirectButton;
-    String userId;
-    String nameFromDB;
-    String emailFromDB;
-    String passwordFromDB;
+    private EditText loginEmail, loginPassword;
+    private Button loginButton, signupRedirectButton;
+
+    private final OkHttpClient client = new OkHttpClient();
+    private static final MediaType JSON_MEDIA = MediaType.parse("application/json; charset=utf-8");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,131 +40,138 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = findViewById(R.id.login_button);
         signupRedirectButton = findViewById(R.id.loginRedirectButton);
 
-        SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
-        String login = preferences.getString("remember", "");
-
-        if (login.equals("true")) {
-            Intent intent = new Intent(LoginActivity.this, FindRandomMovie.class);
-            startActivity(intent);
-        } else if (login.equals("false")) {
-            Toast.makeText(this, "Пожалуйста, войдите.", Toast.LENGTH_SHORT).show();
+        // если уже есть токен — сразу в приложение
+        SharedPreferences authPrefs = getSharedPreferences("auth", MODE_PRIVATE);
+        String accessToken = authPrefs.getString("access_token", "");
+        if (accessToken != null && !accessToken.isEmpty()) {
+            startActivity(new Intent(LoginActivity.this, FindRandomMovie.class));
+            finish();
+            return;
         }
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!validateEmail() | !validatePassword()) {
-                    SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
-                    SharedPreferences.Editor editor = preferences.edit();
-                    editor.putString("remember", "false");
-                    editor.apply();
-                } else {
-                    checkUser();
-                }
+        loginButton.setOnClickListener(v -> {
+            if (validateEmail() & validatePassword()) {
+                loginUser();
             }
         });
 
-        signupRedirectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(LoginActivity.this, SignupActivity.class);
-                startActivity(intent);
-            }
+        signupRedirectButton.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, SignupActivity.class));
         });
-
     }
 
-    public Boolean validateEmail() {
-        String val = loginEmail.getText().toString();
-        try {
-            new InternetAddress(val).validate();
-            return true;
-        } catch (javax.mail.internet.AddressException e) {
+    private boolean validateEmail() {
+        String val = loginEmail.getText().toString().trim();
+        if (val.isEmpty()) {
             loginEmail.setError("Email cannot be empty");
             return false;
         }
+        if (!Patterns.EMAIL_ADDRESS.matcher(val).matches()) {
+            loginEmail.setError("Invalid email format");
+            return false;
+        }
+        loginEmail.setError(null);
+        return true;
     }
 
-    public Boolean validatePassword(){
-        String val = loginPassword.getText().toString();
+    private boolean validatePassword() {
+        String val = loginPassword.getText().toString().trim();
         if (val.isEmpty()) {
             loginPassword.setError("Password cannot be empty");
             return false;
-        } else {
-            loginPassword.setError(null);
-            return true;
         }
+        if (val.length() < 8) {
+            loginPassword.setError("Password must be at least 8 characters");
+            return false;
+        }
+        loginPassword.setError(null);
+        return true;
     }
-    static String encodeUserEmail(String userEmail) {
-        return userEmail.replace(".", ",");
-    }
 
-    static String decodeUserEmail(String userEmail) {
-        return userEmail.replace(",", ".");
-    }
+    private void loginUser() {
+        loginButton.setEnabled(false);
 
-    public void checkUser(){
-        String userEmail = loginEmail.getText().toString().trim();
-        String UserEmailEncoded = encodeUserEmail(userEmail);
-        String userPassword = loginPassword.getText().toString().trim();
+        try {
+            JSONObject bodyJson = new JSONObject();
+            bodyJson.put("email", loginEmail.getText().toString().trim().toLowerCase());
+            bodyJson.put("password", loginPassword.getText().toString().trim());
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("users");
-        Query checkUserDatabase = reference.orderByChild("email").equalTo(UserEmailEncoded);
+            RequestBody body = RequestBody.create(bodyJson.toString(), JSON_MEDIA);
 
-        checkUserDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            Request request = new Request.Builder()
+                    .url(BuildConfig.API_BASE_URL + "/auth/login")
+                    .post(body)
+                    .addHeader("accept", "application/json")
+                    .addHeader("content-type", "application/json")
+                    .build();
 
-                if (dataSnapshot.exists()){
-
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        userId = snapshot.getKey();
-                    }
-
-                    loginEmail.setError(null);
-                    Log.d("DEBUG", "UserEmailEncoded: " + UserEmailEncoded); // Log UserEmailEncoded
-
-                    passwordFromDB = dataSnapshot.child(userId).child("password").getValue(String.class);
-                    Log.d("DEBUG", "PasswordFromDB: " + passwordFromDB);
-
-                    if (passwordFromDB != null && passwordFromDB.equals(userPassword)) {
-                        loginEmail.setError(null);
-
-                        nameFromDB = dataSnapshot.child(userId).child("name").getValue(String.class);
-                        emailFromDB = dataSnapshot.child(userId).child("email").getValue(String.class);
-
-                        SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = preferences.edit();
-                        editor.putString("remember", "true");
-                        editor.putString("name", nameFromDB);
-                        editor.putString("email",emailFromDB);
-                        editor.putString("password", passwordFromDB);
-                        editor.putString("userID", userId);
-                        editor.apply();
-
-//                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        Intent intent = new Intent(LoginActivity.this, FindRandomMovie.class);
-//                        Intent intent = new Intent(LoginActivity.this, NavigationBar.class);
-
-                        intent.putExtra("name", nameFromDB);
-                        intent.putExtra("email", decodeUserEmail(emailFromDB));
-                        intent.putExtra("password", passwordFromDB);
-
-                        startActivity(intent);
-                    } else {
-                        loginPassword.setError("Invalid Credentials");
-                        loginPassword.requestFocus();
-                    }
-                } else {
-                    loginEmail.setError("User does not exist");
-                    loginEmail.requestFocus();
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    runOnUiThread(() -> {
+                        loginButton.setEnabled(true);
+                        Toast.makeText(LoginActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    });
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String responseBody = response.body() != null ? response.body().string() : "";
 
-            }
-        });
+                    runOnUiThread(() -> {
+                        loginButton.setEnabled(true);
+
+                        if (response.isSuccessful()) {
+                            try {
+                                JSONObject obj = new JSONObject(responseBody);
+
+                                String accessToken = obj.getString("access_token");
+                                String refreshToken = obj.getString("refresh_token");
+                                JSONObject user = obj.getJSONObject("user");
+
+                                String userId = user.optString("id", "");
+                                String email = user.optString("email", "");
+                                String displayName = user.optString("display_name", "");
+
+                                SharedPreferences authPrefs = getSharedPreferences("auth", MODE_PRIVATE);
+                                authPrefs.edit()
+                                        .putString("access_token", accessToken)
+                                        .putString("refresh_token", refreshToken)
+                                        .putString("user_id", userId)
+                                        .putString("email", email)
+                                        .putString("display_name", displayName)
+                                        .apply();
+
+                                // для совместимости со старой частью приложения:
+                                SharedPreferences oldLoginPrefs = getSharedPreferences("login", MODE_PRIVATE);
+                                oldLoginPrefs.edit()
+                                        .putString("remember", "true")
+                                        .putString("email", email)
+                                        .putString("name", displayName)
+                                        .apply();
+
+                                Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(LoginActivity.this, FindRandomMovie.class));
+                                finish();
+
+                            } catch (Exception e) {
+                                Toast.makeText(LoginActivity.this, "Parse error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            String msg = "Login failed";
+                            try {
+                                JSONObject err = new JSONObject(responseBody);
+                                if (err.has("detail")) msg = err.getString("detail");
+                            } catch (Exception ignored) {}
+                            Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
+                        }
+                    });
+                }
+            });
+
+        } catch (Exception e) {
+            loginButton.setEnabled(true);
+            Toast.makeText(this, "Unexpected error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }

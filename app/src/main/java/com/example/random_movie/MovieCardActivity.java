@@ -25,12 +25,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -236,7 +236,7 @@ public class MovieCardActivity extends AppCompatActivity {
                     uiHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            Picasso.get()
+                            Glide.with(movieImage)
                                     .load(url)
                                     .into(movieImage);
                             movieName.setText("");
