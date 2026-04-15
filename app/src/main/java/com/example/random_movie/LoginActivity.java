@@ -27,17 +27,51 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * @brief Экран входа пользователя в приложение.
+ *
+ * Activity отвечает за:
+ * - ввод email и пароля;
+ * - локальную валидацию полей формы;
+ * - отправку запроса на backend для аутентификации;
+ * - сохранение access/refresh токенов и данных пользователя;
+ * - переход в основную часть приложения после успешного входа.
+ */
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText loginEmail, loginPassword;
-    private Button loginButton, signupRedirectButton;
+    /** Поле ввода email пользователя. */
+    private EditText loginEmail;
+
+    /** Поле ввода пароля пользователя. */
+    private EditText loginPassword;
+
+    /** Кнопка отправки формы входа. */
+    private Button loginButton;
+
+    /** Кнопка перехода на экран регистрации. */
+    private Button signupRedirectButton;
+
+    /** Индикатор загрузки во время сетевого запроса. */
     private ProgressBar loginProgress;
 
+    /** HTTP-клиент для работы с backend API. */
     private OkHttpClient client;
+
+    /** Менеджер локального хранения токенов и данных пользователя. */
     private SessionManager sessionManager;
 
+    /** MIME-тип JSON для тела HTTP-запросов. */
     private static final MediaType JSON_MEDIA = MediaType.parse("application/json; charset=utf-8");
 
+    /**
+     * @brief Инициализирует экран входа.
+     *
+     * Настраивает элементы интерфейса, создает API-клиент и SessionManager,
+     * проверяет признак принудительного выхода, а также выполняет автоматический
+     * переход в приложение, если access token уже сохранен.
+     *
+     * @param savedInstanceState сохраненное состояние Activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,6 +110,13 @@ public class LoginActivity extends AppCompatActivity {
         );
     }
 
+    /**
+     * @brief Проверяет корректность email.
+     *
+     * Метод убеждается, что поле не пустое и соответствует стандартному формату email.
+     *
+     * @return true, если email заполнен и корректен; иначе false
+     */
     private boolean validateEmail() {
         String val = loginEmail.getText().toString().trim();
         if (val.isEmpty()) {
@@ -90,6 +131,13 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * @brief Проверяет корректность пароля.
+     *
+     * Метод проверяет, что пароль не пустой и содержит не менее 8 символов.
+     *
+     * @return true, если пароль соответствует требованиям; иначе false
+     */
     private boolean validatePassword() {
         String val = loginPassword.getText().toString().trim();
         if (val.isEmpty()) {
@@ -104,12 +152,29 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * @brief Переключает экран в режим загрузки или обычный режим.
+     *
+     * При загрузке блокирует кнопки и показывает ProgressBar.
+     *
+     * @param loading признак активного запроса
+     */
     private void setLoading(boolean loading) {
         loginButton.setEnabled(!loading);
         signupRedirectButton.setEnabled(!loading);
         loginProgress.setVisibility(loading ? View.VISIBLE : View.GONE);
     }
 
+    /**
+     * @brief Выполняет вход пользователя через backend API.
+     *
+     * Формирует JSON-запрос с email и паролем, отправляет POST-запрос на
+     * endpoint /auth/login, а при успешном ответе сохраняет токены и данные
+     * пользователя в SessionManager.
+     *
+     * В случае ошибки сети показывает уведомление о проблеме с подключением.
+     * В случае ошибки сервера выводит сообщение, сопоставленное по HTTP-коду.
+     */
     private void loginUser() {
         setLoading(true);
 
@@ -128,6 +193,12 @@ public class LoginActivity extends AppCompatActivity {
                     .build();
 
             client.newCall(request).enqueue(new Callback() {
+                /**
+                 * @brief Обрабатывает ошибку сетевого запроса.
+                 *
+                 * @param call объект HTTP-вызова
+                 * @param e исключение ввода-вывода
+                 */
                 @Override
                 public void onFailure(Call call, IOException e) {
                     runOnUiThread(() -> {
@@ -136,6 +207,16 @@ public class LoginActivity extends AppCompatActivity {
                     });
                 }
 
+                /**
+                 * @brief Обрабатывает ответ backend после попытки входа.
+                 *
+                 * При успешном ответе извлекает access token, refresh token и данные пользователя,
+                 * сохраняет их локально и выполняет переход в основную часть приложения.
+                 *
+                 * @param call объект HTTP-вызова
+                 * @param response HTTP-ответ сервера
+                 * @throws IOException при ошибке чтения тела ответа
+                 */
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseBody = response.body() != null ? response.body().string() : "";
@@ -159,11 +240,11 @@ public class LoginActivity extends AppCompatActivity {
                                 sessionManager.saveUser(userId, email, displayName);
 
                                 // Для совместимости со старой частью приложения (если где-то еще читается "login")
-                                getSharedPreferences("login", MODE_PRIVATE).edit()
-                                        .putString("remember", "true")
-                                        .putString("name", displayName)
-                                        .putString("email", email)
-                                        .apply();
+//                                getSharedPreferences("login", MODE_PRIVATE).edit()
+//                                        .putString("remember", "true")
+//                                        .putString("name", displayName)
+//                                        .putString("email", email)
+//                                        .apply();
 
                                 Toast.makeText(LoginActivity.this, "Вход выполнен", Toast.LENGTH_SHORT).show();
                                 goToApp();
@@ -186,6 +267,14 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @brief Извлекает сообщение об ошибке из JSON-ответа сервера.
+     *
+     * Пытается прочитать поля {@code message} или {@code detail}.
+     *
+     * @param responseBody тело ответа сервера
+     * @return текст ошибки или пустая строка, если извлечь сообщение не удалось
+     */
     private String extractServerMessage(String responseBody) {
         try {
             JSONObject err = new JSONObject(responseBody);
@@ -195,6 +284,11 @@ public class LoginActivity extends AppCompatActivity {
         return "";
     }
 
+    /**
+     * @brief Выполняет переход в основную часть приложения.
+     *
+     * Очищает стек Activity и открывает экран случайного выбора фильма.
+     */
     private void goToApp() {
         Intent intent = new Intent(LoginActivity.this, FindRandomMovie.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

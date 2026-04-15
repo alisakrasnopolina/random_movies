@@ -15,23 +15,49 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Route;
 
+/**
+ * @brief Authenticator для автоматического обновления access token.
+ *
+ * Класс используется OkHttp при получении ответа 401 Unauthorized.
+ * Он пытается обновить токены через refresh token и повторить исходный запрос.
+ * Если обновление невозможно, выполняется принудительный выход пользователя.
+ */
 public class TokenAuthenticator implements Authenticator {
+    /** Контекст приложения. */
     private final Context appContext;
+
+    /** Менеджер локальной сессии пользователя. */
     private final SessionManager sessionManager;
+
+    /** Вспомогательный API-клиент для auth-запросов. */
     private final AuthApi authApi;
 
+    /**
+     * @brief Создает authenticator токенов.
+     *
+     * Для обновления токенов используется отдельный OkHttpClient
+     * без текущего authenticator, чтобы избежать рекурсивных вызовов.
+     *
+     * @param context контекст приложения
+     */
     public TokenAuthenticator(Context context) {
         this.appContext = context.getApplicationContext();
         this.sessionManager = new SessionManager(appContext);
 
-        // отдельный клиент без этого authenticator, чтобы избежать рекурсии
         OkHttpClient refreshClient = new OkHttpClient.Builder().build();
         this.authApi = new AuthApi(refreshClient);
     }
 
+    /**
+     * @brief Пытается обновить токены после ответа 401.
+     *
+     * @param route маршрут запроса
+     * @param response ответ, вызвавший аутентификацию
+     * @return новый запрос с обновленным access token или null, если повтор невозможен
+     * @throws IOException при ошибке сетевого взаимодействия
+     */
     @Override
     public Request authenticate(Route route, Response response) throws IOException {
-        // защита от бесконечных циклов ретраев
         if (responseCount(response) >= 2) {
             forceLogout();
             return null;
@@ -67,12 +93,24 @@ public class TokenAuthenticator implements Authenticator {
         }
     }
 
+    /**
+     * @brief Подсчитывает количество предыдущих ответов в цепочке retry.
+     *
+     * @param response текущий HTTP-ответ
+     * @return количество ответов в цепочке
+     */
     private int responseCount(Response response) {
         int result = 1;
         while ((response = response.priorResponse()) != null) result++;
         return result;
     }
 
+    /**
+     * @brief Выполняет принудительный выход пользователя.
+     *
+     * Очищает локальную сессию, устанавливает флаг force logout
+     * и открывает экран входа.
+     */
     private void forceLogout() {
         sessionManager.clearSession();
         sessionManager.setForceLogout(true);

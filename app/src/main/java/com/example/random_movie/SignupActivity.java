@@ -26,16 +26,46 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * @brief Экран регистрации нового пользователя.
+ *
+ * Activity отвечает за:
+ * - ввод имени, email и пароля;
+ * - локальную валидацию регистрационной формы;
+ * - отправку запроса на backend для создания учетной записи;
+ * - переход на экран входа после успешной регистрации.
+ */
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText signupName, signupEmail, signupPassword;
-    private Button signupButton, loginRedirectButton;
+    /** Поле ввода отображаемого имени. */
+    private EditText signupName;
+
+    /** Поле ввода email. */
+    private EditText signupEmail;
+
+    /** Поле ввода пароля. */
+    private EditText signupPassword;
+
+    /** Кнопка отправки формы регистрации. */
+    private Button signupButton;
+
+    /** Кнопка перехода на экран входа. */
+    private Button loginRedirectButton;
+
+    /** Индикатор загрузки во время регистрации. */
     private ProgressBar signupProgress;
 
+    /** HTTP-клиент для выполнения запросов к backend API. */
     private OkHttpClient client;
 
+    /** MIME-тип JSON для тела запросов. */
     private static final MediaType JSON_MEDIA = MediaType.parse("application/json; charset=utf-8");
 
+    /**
+     * @brief Инициализирует экран регистрации.
+     *
+     * @param savedInstanceState сохраненное состояние Activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +91,11 @@ public class SignupActivity extends AppCompatActivity {
         );
     }
 
+    /**
+     * @brief Проверяет корректность имени пользователя.
+     *
+     * @return true, если имя заполнено; иначе false
+     */
     private boolean validateName() {
         String val = signupName.getText().toString().trim();
         if (val.isEmpty()) {
@@ -71,6 +106,11 @@ public class SignupActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * @brief Проверяет корректность email.
+     *
+     * @return true, если email заполнен и соответствует формату; иначе false
+     */
     private boolean validateEmail() {
         String val = signupEmail.getText().toString().trim();
         if (val.isEmpty()) {
@@ -85,6 +125,11 @@ public class SignupActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * @brief Проверяет корректность пароля.
+     *
+     * @return true, если пароль не пустой и содержит не менее 8 символов; иначе false
+     */
     private boolean validatePassword() {
         String val = signupPassword.getText().toString().trim();
         if (val.isEmpty()) {
@@ -99,12 +144,24 @@ public class SignupActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * @brief Переключает экран в режим загрузки или обычный режим.
+     *
+     * @param loading признак активного сетевого запроса
+     */
     private void setLoading(boolean loading) {
         signupButton.setEnabled(!loading);
         loginRedirectButton.setEnabled(!loading);
         signupProgress.setVisibility(loading ? View.VISIBLE : View.GONE);
     }
 
+    /**
+     * @brief Выполняет регистрацию пользователя через backend API.
+     *
+     * Отправляет POST-запрос на endpoint /auth/register с email, паролем
+     * и отображаемым именем. После успешной регистрации переводит пользователя
+     * на экран входа.
+     */
     private void registerUser() {
         setLoading(true);
 
@@ -124,6 +181,12 @@ public class SignupActivity extends AppCompatActivity {
                     .build();
 
             client.newCall(request).enqueue(new Callback() {
+                /**
+                 * @brief Обрабатывает ошибку сетевого запроса.
+                 *
+                 * @param call объект HTTP-вызова
+                 * @param e исключение ввода-вывода
+                 */
                 @Override
                 public void onFailure(Call call, IOException e) {
                     runOnUiThread(() -> {
@@ -132,6 +195,13 @@ public class SignupActivity extends AppCompatActivity {
                     });
                 }
 
+                /**
+                 * @brief Обрабатывает ответ сервера на запрос регистрации.
+                 *
+                 * @param call объект HTTP-вызова
+                 * @param response HTTP-ответ сервера
+                 * @throws IOException при ошибке чтения тела ответа
+                 */
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
                     String responseBody = response.body() != null ? response.body().string() : "";
@@ -158,6 +228,12 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * @brief Извлекает текст ошибки из ответа сервера.
+     *
+     * @param responseBody тело ответа сервера
+     * @return сообщение об ошибке или пустая строка
+     */
     private String extractServerMessage(String responseBody) {
         try {
             JSONObject err = new JSONObject(responseBody);

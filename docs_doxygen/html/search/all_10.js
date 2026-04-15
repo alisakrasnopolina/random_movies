@@ -1,0 +1,23 @@
+var searchData=
+[
+  ['savetokens_0',['saveTokens',['../classcom_1_1example_1_1random__movie_1_1auth_1_1_session_manager.html#a259ef5578a83c718fccd8af7ceb52b36',1,'com::example::random_movie::auth::SessionManager']]],
+  ['saveuser_1',['saveUser',['../classcom_1_1example_1_1random__movie_1_1auth_1_1_session_manager.html#a632dc268d697fa67104083523c5cb596',1,'com::example::random_movie::auth::SessionManager']]],
+  ['sessionmanager_2',['SessionManager',['../classcom_1_1example_1_1random__movie_1_1auth_1_1_session_manager.html',1,'com.example.random_movie.auth.SessionManager'],['../classcom_1_1example_1_1random__movie_1_1auth_1_1_session_manager.html#a1dcfd008eb52bb161ff3f3e801be6470',1,'com.example.random_movie.auth.SessionManager.SessionManager()']]],
+  ['sessionmanager_3',['sessionManager',['../classcom_1_1example_1_1random__movie_1_1auth_1_1_auth_interceptor.html#a41be03432de5fc09c3e89584eabe60ea',1,'com.example.random_movie.auth.AuthInterceptor.sessionManager'],['../classcom_1_1example_1_1random__movie_1_1auth_1_1_token_authenticator.html#ac30606e1a32d8cc400911227c7d578da',1,'com.example.random_movie.auth.TokenAuthenticator.sessionManager'],['../classcom_1_1example_1_1random__movie_1_1_login_activity.html#acdf1d28e6942966858ad3e2a5c0c35fa',1,'com.example.random_movie.LoginActivity.sessionManager'],['../classcom_1_1example_1_1random__movie_1_1_main_activity.html#a2de587b818e438e09dcb7421502da422',1,'com.example.random_movie.MainActivity.sessionManager']]],
+  ['sessionmanager_2ejava_4',['SessionManager.java',['../_session_manager_8java.html',1,'']]],
+  ['setemail_5',['setEmail',['../classcom_1_1example_1_1random__movie_1_1_helper_class.html#a9b22573e7fc6e94e5e8bf1dbed6adbdd',1,'com::example::random_movie::HelperClass']]],
+  ['setforcelogout_6',['setForceLogout',['../classcom_1_1example_1_1random__movie_1_1auth_1_1_session_manager.html#aee69a66e09e82f8cd5406c199e46f25a',1,'com::example::random_movie::auth::SessionManager']]],
+  ['setloading_7',['setLoading',['../classcom_1_1example_1_1random__movie_1_1_login_activity.html#a0938be3ea1965f02804c61f8543c031f',1,'com.example.random_movie.LoginActivity.setLoading()'],['../classcom_1_1example_1_1random__movie_1_1_signup_activity.html#a7a4b81acbaac762cf56d6e7cd5dc3018',1,'com.example.random_movie.SignupActivity.setLoading()']]],
+  ['setname_8',['setName',['../classcom_1_1example_1_1random__movie_1_1_helper_class.html#a9a603328c78f59067e9c75107701deda',1,'com::example::random_movie::HelperClass']]],
+  ['setpassword_9',['setPassword',['../classcom_1_1example_1_1random__movie_1_1_helper_class.html#aa28691e07b5930c1fae11e376f8d7b51',1,'com::example::random_movie::HelperClass']]],
+  ['showalluserdata_10',['showAllUserData',['../classcom_1_1example_1_1random__movie_1_1_main_activity.html#a494bf25d9b43064c44769a13803a1ce7',1,'com::example::random_movie::MainActivity']]],
+  ['showdata_11',['showData',['../classcom_1_1example_1_1random__movie_1_1_edit_profile_activity.html#a6f1a942c835c6ed8bbf6a5f4689f6172',1,'com::example::random_movie::EditProfileActivity']]],
+  ['signupactivity_12',['SignupActivity',['../classcom_1_1example_1_1random__movie_1_1_signup_activity.html',1,'com::example::random_movie']]],
+  ['signupactivity_2ejava_13',['SignupActivity.java',['../_signup_activity_8java.html',1,'']]],
+  ['signupbutton_14',['signupButton',['../classcom_1_1example_1_1random__movie_1_1_signup_activity.html#a667f41375f5c0123355e1aa1a558821b',1,'com::example::random_movie::SignupActivity']]],
+  ['signupemail_15',['signupEmail',['../classcom_1_1example_1_1random__movie_1_1_signup_activity.html#a097d2a79edfa510fea24c777c406bfff',1,'com::example::random_movie::SignupActivity']]],
+  ['signupname_16',['signupName',['../classcom_1_1example_1_1random__movie_1_1_signup_activity.html#a8c1898c6b9e170c1d5e9d091bb9757d8',1,'com::example::random_movie::SignupActivity']]],
+  ['signuppassword_17',['signupPassword',['../classcom_1_1example_1_1random__movie_1_1_signup_activity.html#a6f62645edbdd336cfb16f32ee5bbed32',1,'com::example::random_movie::SignupActivity']]],
+  ['signupprogress_18',['signupProgress',['../classcom_1_1example_1_1random__movie_1_1_signup_activity.html#a403d662752b0907f6b6fb839f6736684',1,'com::example::random_movie::SignupActivity']]],
+  ['signupredirectbutton_19',['signupRedirectButton',['../classcom_1_1example_1_1random__movie_1_1_login_activity.html#a529c9c9a27b68c080ad02f6d52d875e7',1,'com::example::random_movie::LoginActivity']]]
+];

@@ -1,0 +1,439 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>app.api.v1.auth &mdash; документация Random Movies Backend 0.2.0</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=fd8abe03"></script>
+      <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../../../../genindex.html" />
+    <link rel="search" title="Поиск" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            Random Movies Backend
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../main.html">Main module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../auth.html">Auth module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../config.html">Config module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../security.html">Security module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../user.html">User model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../profile.html">Profile model</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../session.html">Session model</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">Random Movies Backend</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">app.api.v1.auth</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код app.api.v1.auth</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">timedelta</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">Request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">jose</span><span class="w"> </span><span class="kn">import</span> <span class="n">JWTError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.core.security</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">hash_password</span><span class="p">,</span>
+    <span class="n">verify_password</span><span class="p">,</span>
+    <span class="n">create_access_token</span><span class="p">,</span>
+    <span class="n">create_refresh_token</span><span class="p">,</span>
+    <span class="n">decode_token</span><span class="p">,</span>
+    <span class="n">hash_refresh_token</span><span class="p">,</span>
+    <span class="n">now_utc</span><span class="p">,</span>
+    <span class="n">to_user_error</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.db.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_db</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.models.user</span><span class="w"> </span><span class="kn">import</span> <span class="n">User</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.models.profile</span><span class="w"> </span><span class="kn">import</span> <span class="n">Profile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.models.session</span><span class="w"> </span><span class="kn">import</span> <span class="n">Session</span> <span class="k">as</span> <span class="n">UserSession</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.schemas.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">RegisterRequest</span><span class="p">,</span> <span class="n">LoginRequest</span><span class="p">,</span> <span class="n">RefreshRequest</span><span class="p">,</span> <span class="n">LogoutRequest</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Модуль auth.</span>
+
+<span class="sd">Содержит маршруты аутентификации и управления пользовательскими сессиями:</span>
+<span class="sd">регистрацию, вход, обновление токенов, выход из текущей сессии</span>
+<span class="sd">и выход со всех устройств.</span>
+
+<span class="sd">Также модуль включает простой in-memory rate limit для защиты</span>
+<span class="sd">endpoint входа от частого перебора пароля.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/auth&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auth&quot;</span><span class="p">])</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;auth&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># simple in-memory rate-limit for login (stage)</span>
+<span class="c1"># key=email -&gt; list[timestamps]</span>
+<span class="c1"># ---------------------------</span>
+<span class="n">_LOGIN_ATTEMPTS</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">_LOGIN_LOCK</span> <span class="o">=</span> <span class="n">threading</span><span class="o">.</span><span class="n">Lock</span><span class="p">()</span>
+<span class="n">_LOGIN_WINDOW_SEC</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">_LOGIN_MAX_ATTEMPTS</span> <span class="o">=</span> <span class="mi">8</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_is_rate_limited</span><span class="p">(</span><span class="n">email</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Проверяет, превышен ли лимит попыток входа для указанного email.</span>
+
+<span class="sd">    :param email: Email пользователя</span>
+<span class="sd">    :return: True, если число попыток входа превышает лимит за заданное окно времени</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">_LOGIN_LOCK</span><span class="p">:</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="n">_LOGIN_ATTEMPTS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">email</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">arr</span> <span class="k">if</span> <span class="n">now</span> <span class="o">-</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">_LOGIN_WINDOW_SEC</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">_LOGIN_MAX_ATTEMPTS</span><span class="p">:</span>
+            <span class="n">_LOGIN_ATTEMPTS</span><span class="p">[</span><span class="n">email</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="n">arr</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">now</span><span class="p">)</span>
+        <span class="n">_LOGIN_ATTEMPTS</span><span class="p">[</span><span class="n">email</span><span class="p">]</span> <span class="o">=</span> <span class="n">arr</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_extract_request_id</span><span class="p">(</span><span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Возвращает request_id из объекта запроса.</span>
+
+<span class="sd">    :param request: Объект HTTP-запроса</span>
+<span class="sd">    :return: Идентификатор запроса или &#39;-&#39; при отсутствии значения</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="s2">&quot;request_id&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="register">
+<a class="viewcode-back" href="../../../../auth.html#app.api.v1.auth.register">[документация]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/register&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">RegisterRequest</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Регистрирует нового пользователя.</span>
+
+<span class="sd">    Выполняет проверку уникальности email, создает пользователя,</span>
+<span class="sd">    хэширует пароль и автоматически создает связанный профиль.</span>
+
+<span class="sd">    :param payload: Данные регистрации пользователя</span>
+<span class="sd">    :param request: HTTP-запрос</span>
+<span class="sd">    :param db: Сессия базы данных</span>
+<span class="sd">    :return: Сообщение об успешной регистрации</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rid</span> <span class="o">=</span> <span class="n">_extract_request_id</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="n">existing</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">existing</span><span class="p">:</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;email_exists&quot;</span><span class="p">,</span> <span class="s2">&quot;Email already exists&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">409</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">user</span> <span class="o">=</span> <span class="n">User</span><span class="p">(</span>
+            <span class="n">email</span><span class="o">=</span><span class="n">email</span><span class="p">,</span>
+            <span class="n">password_hash</span><span class="o">=</span><span class="n">hash_password</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">password</span><span class="p">),</span>
+            <span class="n">is_active</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;invalid_password&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">422</span><span class="p">)</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="n">profile</span> <span class="o">=</span> <span class="n">Profile</span><span class="p">(</span>
+        <span class="n">user_id</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">display_name</span><span class="o">=</span><span class="n">payload</span><span class="o">.</span><span class="n">display_name</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+        <span class="n">avatar_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">favorite_genres</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;register_ok rid=</span><span class="si">%s</span><span class="s2"> user_id=</span><span class="si">%s</span><span class="s2"> email=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;registered&quot;</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="login">
+<a class="viewcode-back" href="../../../../auth.html#app.api.v1.auth.login">[документация]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">login</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">LoginRequest</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Выполняет вход пользователя в систему.</span>
+
+<span class="sd">    Проверяет rate limit, ищет пользователя по email, валидирует пароль,</span>
+<span class="sd">    создает серверную сессию и возвращает пару access/refresh токенов.</span>
+
+<span class="sd">    :param payload: Данные для входа</span>
+<span class="sd">    :param request: HTTP-запрос</span>
+<span class="sd">    :param db: Сессия базы данных</span>
+<span class="sd">    :return: JSON с токенами и краткой информацией о пользователе</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rid</span> <span class="o">=</span> <span class="n">_extract_request_id</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+    <span class="n">email</span> <span class="o">=</span> <span class="n">payload</span><span class="o">.</span><span class="n">email</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">_is_rate_limited</span><span class="p">(</span><span class="n">email</span><span class="p">):</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;rate_limited&quot;</span><span class="p">,</span> <span class="s2">&quot;Too many login attempts. Try again later.&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">429</span><span class="p">)</span>
+
+    <span class="n">user</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">User</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">User</span><span class="o">.</span><span class="n">email</span> <span class="o">==</span> <span class="n">email</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;login_fail_no_user rid=</span><span class="si">%s</span><span class="s2"> email=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;invalid_credentials&quot;</span><span class="p">,</span> <span class="s2">&quot;Invalid email or password&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">verify_password</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">password</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">password_hash</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;login_fail_bad_pass rid=</span><span class="si">%s</span><span class="s2"> user_id=</span><span class="si">%s</span><span class="s2"> email=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">email</span><span class="p">)</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;invalid_credentials&quot;</span><span class="p">,</span> <span class="s2">&quot;Invalid email or password&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_active</span><span class="p">:</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;user_inactive&quot;</span><span class="p">,</span> <span class="s2">&quot;User is inactive&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">)</span>
+
+    <span class="n">session_row</span> <span class="o">=</span> <span class="n">UserSession</span><span class="p">(</span>
+        <span class="n">user_id</span><span class="o">=</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">refresh_token_hash</span><span class="o">=</span><span class="s2">&quot;tmp&quot;</span><span class="p">,</span>
+        <span class="n">user_agent</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;user-agent&quot;</span><span class="p">),</span>
+        <span class="n">ip</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">host</span> <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">client</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">expires_at</span><span class="o">=</span><span class="n">now_utc</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">REFRESH_TOKEN_EXPIRE_DAYS</span><span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">session_row</span><span class="p">)</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="n">refresh_token</span> <span class="o">=</span> <span class="n">create_refresh_token</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">session_row</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+    <span class="n">session_row</span><span class="o">.</span><span class="n">refresh_token_hash</span> <span class="o">=</span> <span class="n">hash_refresh_token</span><span class="p">(</span><span class="n">refresh_token</span><span class="p">)</span>
+
+    <span class="n">access_token</span> <span class="o">=</span> <span class="n">create_access_token</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="n">display_name</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">profile</span><span class="o">.</span><span class="n">display_name</span> <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">profile</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;login_ok rid=</span><span class="si">%s</span><span class="s2"> user_id=</span><span class="si">%s</span><span class="s2"> sid=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">session_row</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;access_token&quot;</span><span class="p">:</span> <span class="n">access_token</span><span class="p">,</span>
+        <span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="n">refresh_token</span><span class="p">,</span>
+        <span class="s2">&quot;token_type&quot;</span><span class="p">:</span> <span class="s2">&quot;bearer&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;expires_in&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="o">.</span><span class="n">ACCESS_TOKEN_EXPIRE_MIN</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span>
+        <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+            <span class="s2">&quot;email&quot;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">email</span><span class="p">,</span>
+            <span class="s2">&quot;display_name&quot;</span><span class="p">:</span> <span class="n">display_name</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="refresh">
+<a class="viewcode-back" href="../../../../auth.html#app.api.v1.auth.refresh">[документация]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/refresh&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">refresh</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">RefreshRequest</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Обновляет access и refresh токены по валидному refresh token.</span>
+
+<span class="sd">    Проверяет тип токена, наличие сессии, срок действия,</span>
+<span class="sd">    факт отзыва и совпадение хэша refresh token в базе данных.</span>
+<span class="sd">    При успешной проверке выполняет ротацию refresh token.</span>
+
+<span class="sd">    :param payload: Запрос с refresh token</span>
+<span class="sd">    :param request: HTTP-запрос</span>
+<span class="sd">    :param db: Сессия базы данных</span>
+<span class="sd">    :return: JSON с новой парой токенов</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rid</span> <span class="o">=</span> <span class="n">_extract_request_id</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">claims</span> <span class="o">=</span> <span class="n">decode_token</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">JWTError</span><span class="p">:</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;invalid_refresh&quot;</span><span class="p">,</span> <span class="s2">&quot;Invalid refresh token&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">claims</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">!=</span> <span class="s2">&quot;refresh&quot;</span><span class="p">:</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;invalid_token_type&quot;</span><span class="p">,</span> <span class="s2">&quot;Token type must be refresh&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+
+    <span class="n">sid</span> <span class="o">=</span> <span class="n">claims</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sid&quot;</span><span class="p">)</span>
+    <span class="n">sub</span> <span class="o">=</span> <span class="n">claims</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sub&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sid</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sub</span><span class="p">:</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;malformed_token&quot;</span><span class="p">,</span> <span class="s2">&quot;Refresh token payload is invalid&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+
+    <span class="n">session_row</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">UserSession</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">UserSession</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">sid</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">session_row</span><span class="p">:</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;session_not_found&quot;</span><span class="p">,</span> <span class="s2">&quot;Session not found&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">session_row</span><span class="o">.</span><span class="n">revoked_at</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;session_revoked&quot;</span><span class="p">,</span> <span class="s2">&quot;Session revoked&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">session_row</span><span class="o">.</span><span class="n">expires_at</span> <span class="o">&lt;=</span> <span class="n">now_utc</span><span class="p">():</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;session_expired&quot;</span><span class="p">,</span> <span class="s2">&quot;Session expired&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+
+    <span class="n">incoming_hash</span> <span class="o">=</span> <span class="n">hash_refresh_token</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">incoming_hash</span> <span class="o">!=</span> <span class="n">session_row</span><span class="o">.</span><span class="n">refresh_token_hash</span><span class="p">:</span>
+        <span class="n">to_user_error</span><span class="p">(</span><span class="s2">&quot;refresh_mismatch&quot;</span><span class="p">,</span> <span class="s2">&quot;Refresh token mismatch&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">)</span>
+
+    <span class="n">new_refresh</span> <span class="o">=</span> <span class="n">create_refresh_token</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">session_row</span><span class="o">.</span><span class="n">user_id</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">session_row</span><span class="o">.</span><span class="n">id</span><span class="p">))</span>
+    <span class="n">session_row</span><span class="o">.</span><span class="n">refresh_token_hash</span> <span class="o">=</span> <span class="n">hash_refresh_token</span><span class="p">(</span><span class="n">new_refresh</span><span class="p">)</span>
+    <span class="n">session_row</span><span class="o">.</span><span class="n">expires_at</span> <span class="o">=</span> <span class="n">now_utc</span><span class="p">()</span> <span class="o">+</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">REFRESH_TOKEN_EXPIRE_DAYS</span><span class="p">)</span>
+
+    <span class="n">new_access</span> <span class="o">=</span> <span class="n">create_access_token</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">session_row</span><span class="o">.</span><span class="n">user_id</span><span class="p">))</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;refresh_ok rid=</span><span class="si">%s</span><span class="s2"> user_id=</span><span class="si">%s</span><span class="s2"> sid=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">session_row</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">session_row</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;access_token&quot;</span><span class="p">:</span> <span class="n">new_access</span><span class="p">,</span>
+        <span class="s2">&quot;refresh_token&quot;</span><span class="p">:</span> <span class="n">new_refresh</span><span class="p">,</span>
+        <span class="s2">&quot;token_type&quot;</span><span class="p">:</span> <span class="s2">&quot;bearer&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;expires_in&quot;</span><span class="p">:</span> <span class="n">settings</span><span class="o">.</span><span class="n">ACCESS_TOKEN_EXPIRE_MIN</span> <span class="o">*</span> <span class="mi">60</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="logout">
+<a class="viewcode-back" href="../../../../auth.html#app.api.v1.auth.logout">[документация]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/logout&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">logout</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">LogoutRequest</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Выполняет выход пользователя из текущей сессии.</span>
+
+<span class="sd">    Endpoint работает идемпотентно: даже если refresh token некорректный,</span>
+<span class="sd">    ответ считается успешным. При валидной сессии она помечается отозванной.</span>
+
+<span class="sd">    :param payload: Запрос с refresh token</span>
+<span class="sd">    :param request: HTTP-запрос</span>
+<span class="sd">    :param db: Сессия базы данных</span>
+<span class="sd">    :return: Сообщение о завершении выхода</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rid</span> <span class="o">=</span> <span class="n">_extract_request_id</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">claims</span> <span class="o">=</span> <span class="n">decode_token</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">JWTError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;logged out&quot;</span><span class="p">}</span>
+
+    <span class="n">sid</span> <span class="o">=</span> <span class="n">claims</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sid&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sid</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;logged out&quot;</span><span class="p">}</span>
+
+    <span class="n">session_row</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">UserSession</span><span class="p">)</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">UserSession</span><span class="o">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">sid</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">session_row</span> <span class="ow">and</span> <span class="n">session_row</span><span class="o">.</span><span class="n">revoked_at</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">session_row</span><span class="o">.</span><span class="n">revoked_at</span> <span class="o">=</span> <span class="n">now_utc</span><span class="p">()</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;logout_ok rid=</span><span class="si">%s</span><span class="s2"> user_id=</span><span class="si">%s</span><span class="s2"> sid=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">session_row</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="n">sid</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;logged out&quot;</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="logout_all">
+<a class="viewcode-back" href="../../../../auth.html#app.api.v1.auth.logout_all">[документация]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/logout-all&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">logout_all</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">LogoutRequest</span><span class="p">,</span> <span class="n">request</span><span class="p">:</span> <span class="n">Request</span><span class="p">,</span> <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_db</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Выполняет выход пользователя со всех устройств.</span>
+
+<span class="sd">    Находит все активные сессии пользователя и помечает их отозванными.</span>
+
+<span class="sd">    :param payload: Запрос с refresh token</span>
+<span class="sd">    :param request: HTTP-запрос</span>
+<span class="sd">    :param db: Сессия базы данных</span>
+<span class="sd">    :return: Сообщение о завершении глобального выхода</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rid</span> <span class="o">=</span> <span class="n">_extract_request_id</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">claims</span> <span class="o">=</span> <span class="n">decode_token</span><span class="p">(</span><span class="n">payload</span><span class="o">.</span><span class="n">refresh_token</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">JWTError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;logged out_all&quot;</span><span class="p">}</span>
+
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">claims</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sub&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">user_id</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;logged out_all&quot;</span><span class="p">}</span>
+
+    <span class="n">active_sessions</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">UserSession</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">UserSession</span><span class="o">.</span><span class="n">user_id</span> <span class="o">==</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">UserSession</span><span class="o">.</span><span class="n">revoked_at</span><span class="o">.</span><span class="n">is_</span><span class="p">(</span><span class="kc">None</span><span class="p">))</span>
+        <span class="o">.</span><span class="n">all</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="n">now</span> <span class="o">=</span> <span class="n">now_utc</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">active_sessions</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">revoked_at</span> <span class="o">=</span> <span class="n">now</span>
+    <span class="n">db</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;logout_all_ok rid=</span><span class="si">%s</span><span class="s2"> user_id=</span><span class="si">%s</span><span class="s2"> count=</span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">rid</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">active_sessions</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;logged out_all&quot;</span><span class="p">}</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2026, Alisa Krasnopolina. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
