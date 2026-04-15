@@ -3,12 +3,17 @@ package com.example.random_movie;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.example.random_movie.auth.ApiClient;
+import com.example.random_movie.auth.AuthErrorMapper;
+import com.example.random_movie.auth.SessionManager;
 
 import org.json.JSONObject;
 
@@ -26,8 +31,11 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText loginEmail, loginPassword;
     private Button loginButton, signupRedirectButton;
+    private ProgressBar loginProgress;
 
-    private final OkHttpClient client = new OkHttpClient();
+    private OkHttpClient client;
+    private SessionManager sessionManager;
+
     private static final MediaType JSON_MEDIA = MediaType.parse("application/json; charset=utf-8");
 
     @Override
@@ -39,13 +47,21 @@ public class LoginActivity extends AppCompatActivity {
         loginPassword = findViewById(R.id.login_password);
         loginButton = findViewById(R.id.login_button);
         signupRedirectButton = findViewById(R.id.loginRedirectButton);
+        loginProgress = findViewById(R.id.login_progress);
 
-        // если уже есть токен — сразу в приложение
-        SharedPreferences authPrefs = getSharedPreferences("auth", MODE_PRIVATE);
-        String accessToken = authPrefs.getString("access_token", "");
+        client = ApiClient.get(this);
+        sessionManager = new SessionManager(this);
+
+        // Если forced logout был из TokenAuthenticator — просто очищаем флаг и остаемся на логине
+        if (sessionManager.isForceLogout()) {
+            sessionManager.setForceLogout(false);
+            Toast.makeText(this, "Сессия истекла, войдите снова", Toast.LENGTH_LONG).show();
+        }
+
+        // Если access уже есть — сразу в приложение
+        String accessToken = sessionManager.getAccessToken();
         if (accessToken != null && !accessToken.isEmpty()) {
-            startActivity(new Intent(LoginActivity.this, FindRandomMovie.class));
-            finish();
+            goToApp();
             return;
         }
 
@@ -55,9 +71,9 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        signupRedirectButton.setOnClickListener(v -> {
-            startActivity(new Intent(LoginActivity.this, SignupActivity.class));
-        });
+        signupRedirectButton.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, SignupActivity.class))
+        );
     }
 
     private boolean validateEmail() {
@@ -88,8 +104,14 @@ public class LoginActivity extends AppCompatActivity {
         return true;
     }
 
+    private void setLoading(boolean loading) {
+        loginButton.setEnabled(!loading);
+        signupRedirectButton.setEnabled(!loading);
+        loginProgress.setVisibility(loading ? View.VISIBLE : View.GONE);
+    }
+
     private void loginUser() {
-        loginButton.setEnabled(false);
+        setLoading(true);
 
         try {
             JSONObject bodyJson = new JSONObject();
@@ -109,8 +131,8 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     runOnUiThread(() -> {
-                        loginButton.setEnabled(true);
-                        Toast.makeText(LoginActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        setLoading(false);
+                        Toast.makeText(LoginActivity.this, "Проверьте интернет", Toast.LENGTH_LONG).show();
                     });
                 }
 
@@ -119,7 +141,7 @@ public class LoginActivity extends AppCompatActivity {
                     String responseBody = response.body() != null ? response.body().string() : "";
 
                     runOnUiThread(() -> {
-                        loginButton.setEnabled(true);
+                        setLoading(false);
 
                         if (response.isSuccessful()) {
                             try {
@@ -127,42 +149,31 @@ public class LoginActivity extends AppCompatActivity {
 
                                 String accessToken = obj.getString("access_token");
                                 String refreshToken = obj.getString("refresh_token");
-                                JSONObject user = obj.getJSONObject("user");
 
+                                JSONObject user = obj.getJSONObject("user");
                                 String userId = user.optString("id", "");
                                 String email = user.optString("email", "");
                                 String displayName = user.optString("display_name", "");
 
-                                SharedPreferences authPrefs = getSharedPreferences("auth", MODE_PRIVATE);
-                                authPrefs.edit()
-                                        .putString("access_token", accessToken)
-                                        .putString("refresh_token", refreshToken)
-                                        .putString("user_id", userId)
-                                        .putString("email", email)
-                                        .putString("display_name", displayName)
-                                        .apply();
+                                sessionManager.saveTokens(accessToken, refreshToken);
+                                sessionManager.saveUser(userId, email, displayName);
 
-                                // для совместимости со старой частью приложения:
-                                SharedPreferences oldLoginPrefs = getSharedPreferences("login", MODE_PRIVATE);
-                                oldLoginPrefs.edit()
+                                // Для совместимости со старой частью приложения (если где-то еще читается "login")
+                                getSharedPreferences("login", MODE_PRIVATE).edit()
                                         .putString("remember", "true")
-                                        .putString("email", email)
                                         .putString("name", displayName)
+                                        .putString("email", email)
                                         .apply();
 
-                                Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(LoginActivity.this, FindRandomMovie.class));
-                                finish();
+                                Toast.makeText(LoginActivity.this, "Вход выполнен", Toast.LENGTH_SHORT).show();
+                                goToApp();
 
                             } catch (Exception e) {
-                                Toast.makeText(LoginActivity.this, "Parse error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "Ошибка обработки ответа", Toast.LENGTH_LONG).show();
                             }
                         } else {
-                            String msg = "Login failed";
-                            try {
-                                JSONObject err = new JSONObject(responseBody);
-                                if (err.has("detail")) msg = err.getString("detail");
-                            } catch (Exception ignored) {}
+                            String serverMessage = extractServerMessage(responseBody);
+                            String msg = AuthErrorMapper.mapByStatus(response.code(), serverMessage);
                             Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
                         }
                     });
@@ -170,8 +181,24 @@ public class LoginActivity extends AppCompatActivity {
             });
 
         } catch (Exception e) {
-            loginButton.setEnabled(true);
+            setLoading(false);
             Toast.makeText(this, "Unexpected error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private String extractServerMessage(String responseBody) {
+        try {
+            JSONObject err = new JSONObject(responseBody);
+            if (err.has("message")) return err.getString("message");
+            if (err.has("detail")) return err.getString("detail");
+        } catch (Exception ignored) {}
+        return "";
+    }
+
+    private void goToApp() {
+        Intent intent = new Intent(LoginActivity.this, FindRandomMovie.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

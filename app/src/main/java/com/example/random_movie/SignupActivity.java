@@ -8,7 +8,11 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.example.random_movie.auth.ApiClient;
+import com.example.random_movie.auth.AuthErrorMapper;
 
 import org.json.JSONObject;
 
@@ -26,7 +30,9 @@ public class SignupActivity extends AppCompatActivity {
 
     private EditText signupName, signupEmail, signupPassword;
     private Button signupButton, loginRedirectButton;
-    private final OkHttpClient client = new OkHttpClient();
+    private ProgressBar signupProgress;
+
+    private OkHttpClient client;
 
     private static final MediaType JSON_MEDIA = MediaType.parse("application/json; charset=utf-8");
 
@@ -40,6 +46,9 @@ public class SignupActivity extends AppCompatActivity {
         signupPassword = findViewById(R.id.signup_password);
         loginRedirectButton = findViewById(R.id.loginRedirectButton);
         signupButton = findViewById(R.id.signup_button);
+        signupProgress = findViewById(R.id.signup_progress);
+
+        client = ApiClient.get(this);
 
         signupButton.setOnClickListener(v -> {
             if (validateName() & validateEmail() & validatePassword()) {
@@ -47,10 +56,9 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
-        loginRedirectButton.setOnClickListener(v -> {
-            Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-            startActivity(intent);
-        });
+        loginRedirectButton.setOnClickListener(v ->
+                startActivity(new Intent(SignupActivity.this, LoginActivity.class))
+        );
     }
 
     private boolean validateName() {
@@ -91,8 +99,14 @@ public class SignupActivity extends AppCompatActivity {
         return true;
     }
 
+    private void setLoading(boolean loading) {
+        signupButton.setEnabled(!loading);
+        loginRedirectButton.setEnabled(!loading);
+        signupProgress.setVisibility(loading ? View.VISIBLE : View.GONE);
+    }
+
     private void registerUser() {
-        signupButton.setEnabled(false);
+        setLoading(true);
 
         try {
             JSONObject bodyJson = new JSONObject();
@@ -113,8 +127,8 @@ public class SignupActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     runOnUiThread(() -> {
-                        signupButton.setEnabled(true);
-                        Toast.makeText(SignupActivity.this, "Network error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                        setLoading(false);
+                        Toast.makeText(SignupActivity.this, "Проверьте интернет", Toast.LENGTH_LONG).show();
                     });
                 }
 
@@ -123,18 +137,15 @@ public class SignupActivity extends AppCompatActivity {
                     String responseBody = response.body() != null ? response.body().string() : "";
 
                     runOnUiThread(() -> {
-                        signupButton.setEnabled(true);
+                        setLoading(false);
 
                         if (response.isSuccessful()) {
-                            Toast.makeText(SignupActivity.this, "Registration successful. Please log in.", Toast.LENGTH_LONG).show();
+                            Toast.makeText(SignupActivity.this, "Регистрация успешна. Войдите в аккаунт.", Toast.LENGTH_LONG).show();
                             startActivity(new Intent(SignupActivity.this, LoginActivity.class));
                             finish();
                         } else {
-                            String msg = "Registration failed";
-                            try {
-                                JSONObject err = new JSONObject(responseBody);
-                                if (err.has("detail")) msg = err.getString("detail");
-                            } catch (Exception ignored) {}
+                            String serverMessage = extractServerMessage(responseBody);
+                            String msg = AuthErrorMapper.mapByStatus(response.code(), serverMessage);
                             Toast.makeText(SignupActivity.this, msg, Toast.LENGTH_LONG).show();
                         }
                     });
@@ -142,8 +153,17 @@ public class SignupActivity extends AppCompatActivity {
             });
 
         } catch (Exception e) {
-            signupButton.setEnabled(true);
+            setLoading(false);
             Toast.makeText(this, "Unexpected error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private String extractServerMessage(String responseBody) {
+        try {
+            JSONObject err = new JSONObject(responseBody);
+            if (err.has("message")) return err.getString("message");
+            if (err.has("detail")) return err.getString("detail");
+        } catch (Exception ignored) {}
+        return "";
     }
 }
