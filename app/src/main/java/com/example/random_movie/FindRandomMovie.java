@@ -1,6 +1,5 @@
 package com.example.random_movie;
 
-import static android.app.PendingIntent.getActivity;
 import static android.net.Uri.encode;
 
 import androidx.activity.result.ActivityResult;
@@ -9,44 +8,30 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
-import java.sql.Array;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -55,23 +40,16 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-import android.os.Bundle;
-import android.view.MenuItem;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener;
 import java.io.*;
-
-import android.content.SharedPreferences;
 
 public class FindRandomMovie extends AppCompatActivity {
 
     ImageButton findMovieButton, likeButton;
     TextView movieName, movieGenre, movieYear, movieLength, movieRating;
-    ShapeableImageView movieImage; // ShapeableImageView
+    ShapeableImageView movieImage;
     CardView movieCard;
     FirebaseDatabase database;
     DatabaseReference reference, reference_watched;
@@ -158,13 +136,14 @@ public class FindRandomMovie extends AppCompatActivity {
                             loadingProgress.setVisibility(View.VISIBLE);
 
                             OkHttpClient client = new OkHttpClient();
-                            String url_database = "https://api.kinopoisk.dev/v1.4/movie/random";
+
+                            String urlDatabase = ApiConfig.BASE_URL + "/movie/random";
 
                             Request request = new Request.Builder()
-                                    .url(url_database + "?notNullFields=name&notNullFields=description&notNullFields=rating.imdb&notNullFields=movieLength&notNullFields=poster.url&notNullFields=year&rating.imdb=6-10" + "&genres.name=" + encode(movieGenreFromFilter))
+                                    .url(urlDatabase + "?notNullFields=name&notNullFields=description&notNullFields=rating.imdb&notNullFields=movieLength&notNullFields=poster.url&notNullFields=year&rating.imdb=6-10" + "&genres.name=" + encode(movieGenreFromFilter))
                                     .get()
                                     .addHeader("accept", "application/json")
-                                    .addHeader("X-API-KEY", "TG4WNC1-6SMMDW8-NSRC5EE-E6X5A1M")
+                                    .addHeader("X-API-KEY", ApiConfig.API_KEY)
                                     .build();
 
                             client.newCall(request).enqueue(new Callback() {
@@ -181,22 +160,7 @@ public class FindRandomMovie extends AppCompatActivity {
                                                     response.code() + " " + response.message());
                                         }
                                         String responseData = response.body().string();
-                                        // пример получения всех заголовков ответа
-//                            Headers responseHeaders = response.headers();
-//                            for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-//                                // вывод заголовков
-//                                System.out.println(responseHeaders.name(i) + ": "
-//                                        + responseHeaders.value(i));
-//                            }
 
-//                            String res = responseBody.string();
-//                            try {
-//                                 JSONObject jsonObj = new JSONObject(res);
-//                                 String name = responseBody.getString("name");
-//                                 Log.d("k", name);
-//                            } catch (JSONException err){
-//                                Log.d("Error", err.toString());
-//                            }
                                         // вывод тела ответа
                                         Log.d("k", responseData);
 
@@ -233,27 +197,11 @@ public class FindRandomMovie extends AppCompatActivity {
                                         uiHandler.post(new Runnable(){
                                             @Override
                                             public void run() {
-//                                                Picasso.Builder builder = new Picasso.Builder(FindRandomMovie.this);
-//                                                builder.listener(new Picasso.Listener()
-//                                                {
-//                                                    @Override
-//                                                    public void onImageLoadFailed(Picasso picasso, Uri uri, Exception exception)
-//                                                    {
-//                                                        exception.printStackTrace();
-//                                                    }
-//                                                });
-//                                                builder.build().load(url).into(movieImage);
                                                 loadingProgress.setVisibility(View.GONE);
                                                 movieCard.setVisibility(View.VISIBLE);
-                                                Picasso.get()
+                                                    Glide.with(FindRandomMovie.this)
                                                         .load(url)
                                                         .into(movieImage);
-//                                                new ImageLoader(movieImage).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, url);
-//                                                ImageLoader imageLoader = ImageLoader.getInstance();
-//                                                imageLoader.displayImage(imageUri, imageView);
-//                                                Glide.with(context).load(url).into(movieImage);
-//                                                Uri uri = Uri.parse(url);
-//                                                movieImage.setImageURI(uri);
                                                 movieName.setText("");
                                                 movieName.append(name);
                                                 movieGenre.setText("");
@@ -319,13 +267,6 @@ public class FindRandomMovie extends AppCompatActivity {
                         Log.d("error", "The read failed: " + databaseError.getCode());
                     }
                 });
-//                    reference.child("film_number"+id).setValue(id);
-//                if () {
-//                } else if () {
-//                    likeButton.setBackgroundResource(R.drawable.like);
-//                    database = FirebaseDatabase.getInstance();
-//                    reference = database.getReference("users/"+userID+"/liked");
-//                }
             }
         });
     }
@@ -388,25 +329,25 @@ public class FindRandomMovie extends AppCompatActivity {
         id = Integer.parseInt(settings.getString(MOVIE_ID, "0"));
 
 
-        Handler uiHandler = new Handler(Looper.getMainLooper());
-        uiHandler.post(new Runnable(){
-            @Override
-            public void run() {
-                Picasso.get()
-                        .load(url)
-                        .into(movieImage);
-                movieName.setText("");
-                movieName.append(name);
-                movieGenre.setText("");
-                movieGenre.append(genre);
-                movieYear.setText("· ");
-                movieYear.append(String.valueOf(year));
-                movieLength.setText(" ");
-                movieLength.append(String.valueOf(length));
-                movieRating.setText(" ");
-                movieRating.append(String.valueOf(ratingImdb));
-            }
-        });
+//        Handler uiHandler = new Handler(Looper.getMainLooper());
+//        uiHandler.post(new Runnable(){
+//            @Override
+//            public void run() {
+//                Picasso.get()
+//                        .load(url)
+//                        .into(movieImage);
+//                movieName.setText("");
+//                movieName.append(name);
+//                movieGenre.setText("");
+//                movieGenre.append(genre);
+//                movieYear.setText("· ");
+//                movieYear.append(String.valueOf(year));
+//                movieLength.setText(" ");
+//                movieLength.append(String.valueOf(length));
+//                movieRating.setText(" ");
+//                movieRating.append(String.valueOf(ratingImdb));
+//            }
+//        });
     }
 }
 

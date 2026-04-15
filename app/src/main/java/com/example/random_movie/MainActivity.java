@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.random_movie.auth.AuthApi;
+import com.example.random_movie.auth.SessionManager;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -85,16 +87,34 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SharedPreferences preferences = getSharedPreferences("login", MODE_PRIVATE);
-                SharedPreferences.Editor editor = preferences.edit();
-                editor.putString("remember", "false");
-                editor.apply();
+        logoutButton.setOnClickListener(v -> {
+            logoutButton.setEnabled(false);
 
-                finish();
-            }
+            SessionManager sm = new SessionManager(MainActivity.this);
+            String refresh = sm.getRefreshToken();
+
+            new Thread(() -> {
+                try {
+                    AuthApi authApi = new AuthApi(new okhttp3.OkHttpClient());
+                    if (refresh != null && !refresh.isEmpty()) {
+                        authApi.logout(refresh).close();
+                    }
+                } catch (Exception ignored) {
+                    // даже если сеть упала — локально разлогиним
+                } finally {
+                    runOnUiThread(() -> {
+                        sm.clearSession();
+
+                        // если где-то еще используешь старые prefs
+                        getSharedPreferences("login", MODE_PRIVATE).edit().clear().apply();
+
+                        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    });
+                }
+            }).start();
         });
 
         showAllUserData();
