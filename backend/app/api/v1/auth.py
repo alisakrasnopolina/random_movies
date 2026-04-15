@@ -3,7 +3,7 @@ import threading
 import time
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, Request
 from jose import JWTError
 from sqlalchemy.orm import Session
 
@@ -24,6 +24,16 @@ from app.models.profile import Profile
 from app.models.session import Session as UserSession
 from app.schemas.auth import RegisterRequest, LoginRequest, RefreshRequest, LogoutRequest
 
+"""
+Модуль auth.
+
+Содержит маршруты аутентификации и управления пользовательскими сессиями:
+регистрацию, вход, обновление токенов, выход из текущей сессии
+и выход со всех устройств.
+
+Также модуль включает простой in-memory rate limit для защиты
+endpoint входа от частого перебора пароля.
+"""
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 logger = logging.getLogger("auth")
@@ -40,6 +50,12 @@ _LOGIN_MAX_ATTEMPTS = 8
 
 
 def _is_rate_limited(email: str) -> bool:
+    """
+    Проверяет, превышен ли лимит попыток входа для указанного email.
+
+    :param email: Email пользователя
+    :return: True, если число попыток входа превышает лимит за заданное окно времени
+    """
     now = time.time()
     with _LOGIN_LOCK:
         arr = _LOGIN_ATTEMPTS.get(email, [])
@@ -53,11 +69,28 @@ def _is_rate_limited(email: str) -> bool:
 
 
 def _extract_request_id(request: Request) -> str:
+    """
+    Возвращает request_id из объекта запроса.
+
+    :param request: Объект HTTP-запроса
+    :return: Идентификатор запроса или '-' при отсутствии значения
+    """
     return getattr(request.state, "request_id", "-")
 
 
 @router.post("/register")
 def register(payload: RegisterRequest, request: Request, db: Session = Depends(get_db)):
+    """
+    Регистрирует нового пользователя.
+
+    Выполняет проверку уникальности email, создает пользователя,
+    хэширует пароль и автоматически создает связанный профиль.
+
+    :param payload: Данные регистрации пользователя
+    :param request: HTTP-запрос
+    :param db: Сессия базы данных
+    :return: Сообщение об успешной регистрации
+    """
     rid = _extract_request_id(request)
     email = payload.email.lower().strip()
 
@@ -92,6 +125,17 @@ def register(payload: RegisterRequest, request: Request, db: Session = Depends(g
 
 @router.post("/login")
 def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)):
+    """
+    Выполняет вход пользователя в систему.
+
+    Проверяет rate limit, ищет пользователя по email, валидирует пароль,
+    создает серверную сессию и возвращает пару access/refresh токенов.
+
+    :param payload: Данные для входа
+    :param request: HTTP-запрос
+    :param db: Сессия базы данных
+    :return: JSON с токенами и краткой информацией о пользователе
+    """
     rid = _extract_request_id(request)
     email = payload.email.lower().strip()
 
@@ -144,6 +188,18 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
 
 @router.post("/refresh")
 def refresh(payload: RefreshRequest, request: Request, db: Session = Depends(get_db)):
+    """
+    Обновляет access и refresh токены по валидному refresh token.
+
+    Проверяет тип токена, наличие сессии, срок действия,
+    факт отзыва и совпадение хэша refresh token в базе данных.
+    При успешной проверке выполняет ротацию refresh token.
+
+    :param payload: Запрос с refresh token
+    :param request: HTTP-запрос
+    :param db: Сессия базы данных
+    :return: JSON с новой парой токенов
+    """
     rid = _extract_request_id(request)
 
     try:
@@ -173,7 +229,6 @@ def refresh(payload: RefreshRequest, request: Request, db: Session = Depends(get
     if incoming_hash != session_row.refresh_token_hash:
         to_user_error("refresh_mismatch", "Refresh token mismatch", status_code=401)
 
-    # ROTATION
     new_refresh = create_refresh_token(str(session_row.user_id), str(session_row.id))
     session_row.refresh_token_hash = hash_refresh_token(new_refresh)
     session_row.expires_at = now_utc() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
@@ -192,12 +247,22 @@ def refresh(payload: RefreshRequest, request: Request, db: Session = Depends(get
 
 @router.post("/logout")
 def logout(payload: LogoutRequest, request: Request, db: Session = Depends(get_db)):
+    """
+    Выполняет выход пользователя из текущей сессии.
+
+    Endpoint работает идемпотентно: даже если refresh token некорректный,
+    ответ считается успешным. При валидной сессии она помечается отозванной.
+
+    :param payload: Запрос с refresh token
+    :param request: HTTP-запрос
+    :param db: Сессия базы данных
+    :return: Сообщение о завершении выхода
+    """
     rid = _extract_request_id(request)
 
     try:
         claims = decode_token(payload.refresh_token)
     except JWTError:
-        # logout должен быть идемпотентным: даже на плохой токен возвращаем OK
         return {"message": "logged out"}
 
     sid = claims.get("sid")
@@ -215,6 +280,16 @@ def logout(payload: LogoutRequest, request: Request, db: Session = Depends(get_d
 
 @router.post("/logout-all")
 def logout_all(payload: LogoutRequest, request: Request, db: Session = Depends(get_db)):
+    """
+    Выполняет выход пользователя со всех устройств.
+
+    Находит все активные сессии пользователя и помечает их отозванными.
+
+    :param payload: Запрос с refresh token
+    :param request: HTTP-запрос
+    :param db: Сессия базы данных
+    :return: Сообщение о завершении глобального выхода
+    """
     rid = _extract_request_id(request)
 
     try:
