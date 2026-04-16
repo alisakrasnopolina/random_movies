@@ -155,13 +155,12 @@ public class MovieCardActivity extends AppCompatActivity {
         islikedOrWatchedButton();
 
         OkHttpClient client = new OkHttpClient();
-        String url = "https://api.kinopoisk.dev/v1.4/movie/";
 
+        String url = BuildConfig.API_BASE_URL + "/movies/" + MovieId;
         Request request = new Request.Builder()
-                .url(url + MovieId)
+                .url(url)
                 .get()
                 .addHeader("accept", "application/json")
-                .addHeader("X-API-KEY", "0QZTAKB-HX6MTJ1-N6ABCHA-MSF9HBF")
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

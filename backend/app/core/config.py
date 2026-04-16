@@ -42,6 +42,12 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_EXPIRE_DAYS: int = 30
     """Срок жизни refresh token в днях."""
 
+    KINOPOISK_BASE_URL: str
+    """Строка подключения к API ПоискКино."""
+
+    KINOPOISK_API_KEY: str
+    """Ключ подключения для API ПоискКино."""
+
 
 settings = Settings()
 """

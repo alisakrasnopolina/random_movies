@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -137,13 +138,11 @@ public class FindRandomMovie extends AppCompatActivity {
 
                             OkHttpClient client = new OkHttpClient();
 
-                            String urlDatabase = ApiConfig.BASE_URL + "/movie/random";
-
+                            String urlDatabase = BuildConfig.API_BASE_URL + "/movies/random";
                             Request request = new Request.Builder()
-                                    .url(urlDatabase + "?notNullFields=name&notNullFields=description&notNullFields=rating.imdb&notNullFields=movieLength&notNullFields=poster.url&notNullFields=year&rating.imdb=6-10" + "&genres.name=" + encode(movieGenreFromFilter))
+                                    .url(urlDatabase + (movieGenreFromFilter != null ? "?genre=" + encode(movieGenreFromFilter) : ""))
                                     .get()
                                     .addHeader("accept", "application/json")
-                                    .addHeader("X-API-KEY", ApiConfig.API_KEY)
                                     .build();
 
                             client.newCall(request).enqueue(new Callback() {
@@ -165,31 +164,14 @@ public class FindRandomMovie extends AppCompatActivity {
                                         Log.d("k", responseData);
 
                                         JSONObject jsonObj = new JSONObject(responseData);
-                                        name = jsonObj.getString("name");
-                                        String alterName = jsonObj.getString("alternativeName");
-                                        Log.d("name", name);
-                                        Log.d("alterName", alterName);
 
-                                        year = jsonObj.getInt("year");
-                                        Log.d("year", String.valueOf(year));
-
-                                        JSONObject poster = jsonObj.getJSONObject("poster");
-                                        url = poster.getString("url");
-                                        Log.d("url", url);
-
-                                        JSONArray genres = jsonObj.getJSONArray("genres");
-                                        JSONObject first_genre = genres.getJSONObject(0);
-                                        genre = first_genre.getString("name");
-                                        Log.d("genres", genre);
-
-                                        JSONObject ratings = jsonObj.getJSONObject("rating");
-                                        ratingImdb = ratings.getInt("imdb");
-                                        Log.d("imdb", String.valueOf(ratingImdb));
-
-                                        length = jsonObj.getInt("movieLength");
-                                        Log.d("movieLength", String.valueOf(length));
-
-                                        id = jsonObj.getInt("id");
+                                        name = jsonObj.optString("title", "Unknown");
+                                        year = jsonObj.optInt("year", 0);
+                                        url = jsonObj.optString("poster_url", "");
+                                        genre = jsonObj.optString("genre", "—");
+                                        ratingImdb = (int) Math.round(jsonObj.optDouble("rating_imdb", 0.0));
+                                        length = jsonObj.optInt("runtime_min", 0);
+                                        id = jsonObj.optInt("id", 0);
 
                                         isCardLiked();
 
@@ -200,8 +182,9 @@ public class FindRandomMovie extends AppCompatActivity {
                                                 loadingProgress.setVisibility(View.GONE);
                                                 movieCard.setVisibility(View.VISIBLE);
                                                     Glide.with(FindRandomMovie.this)
-                                                        .load(url)
-                                                        .into(movieImage);
+                                                            .load(url)
+                                                            .centerCrop()
+                                                            .into(movieImage);
                                                 movieName.setText("");
                                                 movieName.append(name);
                                                 movieGenre.setText("");
@@ -215,8 +198,15 @@ public class FindRandomMovie extends AppCompatActivity {
                                             }
                                         });
                                     }
-                                    catch  (JSONException e) {
+                                    catch (JSONException e) {
                                         Log.e("MYAPP", "unexpected JSON exception", e);
+
+                                        Handler uiHandler = new Handler(Looper.getMainLooper());
+                                        uiHandler.post(() -> {
+                                            loadingProgress.setVisibility(View.GONE);
+                                            movieCard.setVisibility(View.INVISIBLE);
+                                            Toast.makeText(FindRandomMovie.this, "Ошибка обработки данных фильма", Toast.LENGTH_LONG).show();
+                                        });
                                     }
                                 }
                             });

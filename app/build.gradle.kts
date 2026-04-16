@@ -14,12 +14,11 @@ android {
             val file = rootProject.file("local.properties")
             if (file.exists()) file.inputStream().use { load(it) }
         }
-
-        val kinopoiskBaseUrl = localProps.getProperty("KINOPOISK_BASE_URL", "https://api.poiskkino.dev/v1.4")
-        val kinopoiskApiKey = localProps.getProperty("KINOPOISK_API_KEY", "0QZTAKB-HX6MTJ1-N6ABCHA-MSF9HBF")
-
-        buildConfigField("String", "KINOPOISK_BASE_URL", "\"$kinopoiskBaseUrl\"")
-        buildConfigField("String", "KINOPOISK_API_KEY", "\"$kinopoiskApiKey\"")
+//        val kinopoiskBaseUrl = localProps.getProperty("KINOPOISK_BASE_URL", "https://api.poiskkino.dev/v1.4")
+//        val kinopoiskApiKey = localProps.getProperty("KINOPOISK_API_KEY", "0QZTAKB-HX6MTJ1-N6ABCHA-MSF9HBF")
+//
+//        buildConfigField("String", "KINOPOISK_BASE_URL", "\"$kinopoiskBaseUrl\"")
+//        buildConfigField("String", "KINOPOISK_API_KEY", "\"$kinopoiskApiKey\"")
 
         val apiBaseUrl = localProps.getProperty("API_BASE_URL", "http://10.0.2.2:8000")
         buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
