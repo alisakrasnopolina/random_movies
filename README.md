@@ -1,20 +1,39 @@
-<h1>Random movies</h1>
-<p>Приложение для случайного выбора фильма.</p>
+# Random Movie
 
-<h3>Используемые технологии</h3>
-<ul>
-  <li>Android Studio</li>
-  <li>Java</li>
-  <li>XML</li>
-  <li>Firebase</li>
-  <li>OkHttp</li>
-  <li><a href="https://kinopoisk.dev/">API Kinopoisk</a></li>
-  <li><a style="text-decoration:none;color:#000000;" href="https://www.figma.com/design/7dd1JDqOlq0ZlzRTS3CS2W/Untitled?node-id=0-1&t=7KTnrWzweJ6dDi3m-1">Figma</a></li>
-</ul>
+Random Movie — мобильное приложение для случайного подбора фильмов, хранения понравившихся картин и совместного выбора фильма с другом.
 
-<h3>Экраны приложения</h3>
-<img src="https://github.com/alisakrasnopolina/random_movies/blob/main/app/src/main/res/drawable/image_presentation_1.png?raw=true">
-<img src="https://github.com/alisakrasnopolina/random_movies/blob/main/app/src/main/res/drawable/image_presentation_2.png?raw=true">
-<img src="https://github.com/alisakrasnopolina/random_movies/blob/main/app/src/main/res/drawable/image_presentation_4.png?raw=true">
-<img src="https://github.com/alisakrasnopolina/random_movies/blob/main/app/src/main/res/drawable/image_presentation_3.png?raw=true">
-<img src="https://github.com/alisakrasnopolina/random_movies/blob/main/app/src/main/res/drawable/image_presentation_5.png?raw=true">
+## Основные возможности
+- регистрация и вход в приложение;
+- случайный подбор фильма;
+- фильтрация по жанру, году, стране и рейтингу;
+- просмотр подробной информации о фильме;
+- добавление фильмов в списки **«Буду смотреть»** и **«Просмотрено»**;
+- оценка просмотренных фильмов;
+- совместный выбор фильма с другим пользователем;
+- просмотр советов и рекомендаций от друзей;
+- просмотр статистики профиля.
+
+## Используемые технологии
+- Android Studio
+- Java
+- XML
+- Python
+- FastAPI
+- PostgreSQL
+- OkHttp
+- JWT Authentication
+- Docker
+- Caddy
+- [API ПоискКино](https://poiskkino.dev/documentation#description/introduction)
+- [Figma](https://www.figma.com/design/7dd1JDqOlq0ZlzRTS3CS2W/Untitled?node-id=0-1&t=7KTnrWzweJ6dDi3m-1)
+
+## Запуск проекта
+Для локального запуска необходимо:
+1. запустить PostgreSQL в Docker;
+2. запустить backend на FastAPI;
+3. запустить Caddy;
+4. открыть Android-клиент в Android Studio.
+
+## Документация
+- Документация разработчика: Sphinx и Doxygen
+- Документация пользователя: GitHub Wiki
