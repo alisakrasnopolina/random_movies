@@ -239,6 +239,9 @@ public class LoginActivity extends AppCompatActivity {
                                 sessionManager.saveTokens(accessToken, refreshToken);
                                 sessionManager.saveUser(userId, email, displayName);
 
+                                com.example.random_movie.sync.SyncScheduler.enqueuePeriodic(getApplicationContext());
+                                com.example.random_movie.sync.SyncScheduler.enqueueOneTime(getApplicationContext());
+
                                 // Для совместимости со старой частью приложения (если где-то еще читается "login")
 //                                getSharedPreferences("login", MODE_PRIVATE).edit()
 //                                        .putString("remember", "true")

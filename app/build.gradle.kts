@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.example.random_movie"
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         val localProps = Properties().apply {
@@ -67,4 +67,13 @@ dependencies {
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+
+    implementation("androidx.lifecycle:lifecycle-livedata:2.8.4")
+    implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.4")
+
+    implementation("androidx.work:work-runtime:2.9.1")
 }

@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 
 from app.api.v1.auth import router as auth_router
 from app.api.v1.movies import router as movies_router
+from app.api.v1.users_me_movies import router as users_me_movies_router
 
 """
 Главный модуль FastAPI-приложения.
@@ -30,6 +31,7 @@ app = FastAPI(title="Random Movies Backend", version="0.2.0")
 
 app.include_router(auth_router)
 app.include_router(movies_router)
+app.include_router(users_me_movies_router)
 
 
 @app.middleware("http")
