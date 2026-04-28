@@ -43,195 +43,329 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:orientation="vertical"
                     android:layout_marginHorizontal="24dp"
+                    android:orientation="vertical"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/toolbar">
+
                     <TextView
                         android:id="@+id/movie_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="start"
-                        android:textSize="32sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/textColor"
                         android:layout_marginTop="24dp"
-                        android:text="TextView"/>
+                        android:text="TextView"
+                        android:textColor="@color/textColor"
+                        android:textSize="32sp"
+                        android:textStyle="bold" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/movie_length"
-                            android:textSize="14sp"
-                            android:textColor="@color/textColor"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            app:drawableStartCompat="@drawable/clock"
-                            android:text="TextView" />
+                            android:text="TextView"
+                            android:textColor="@color/textColor"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/clock" />
 
                         <TextView
                             android:id="@+id/movie_rate"
-                            android:textSize="14sp"
-                            android:textColor="@color/textColor"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            app:drawableStartCompat="@drawable/star"
-                            android:text="TextView" />
+                            android:text="TextView"
+                            android:textColor="@color/textColor"
+                            android:textSize="14sp"
+                            app:drawableStartCompat="@drawable/star" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/title_country"
-                            android:textSize="14sp"
-                            android:textColor="@color/textColor_subtitles"
                             android:layout_width="0px"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="@string/country_title" />
+                            android:layout_weight="1"
+                            android:text="@string/country_title"
+                            android:textColor="@color/textColor_subtitles"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/movie_countries"
-                            android:textSize="14sp"
-                            android:textColor="@color/textColor"
                             android:layout_width="0px"
-                            android:layout_weight="3"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            android:text="TextView" />
+                            android:layout_weight="3"
+                            android:text="TextView"
+                            android:textColor="@color/textColor"
+                            android:textSize="14sp" />
                     </LinearLayout>
+
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/divider"/>
+                        android:src="@drawable/divider" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/title_year"
-                            android:textSize="14sp"
-                            android:textColor="@color/textColor_subtitles"
                             android:layout_width="0px"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="@string/year_title" />
+                            android:layout_weight="1"
+                            android:text="@string/year_title"
+                            android:textColor="@color/textColor_subtitles"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/movie_year"
-                            android:textSize="14sp"
-                            android:textColor="@color/textColor"
                             android:layout_width="0px"
-                            android:layout_weight="3"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            android:text="TextView"/>
+                            android:layout_weight="3"
+                            android:text="TextView"
+                            android:textColor="@color/textColor"
+                            android:textSize="14sp" />
                     </LinearLayout>
+
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/divider"/>
+                        android:src="@drawable/divider" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
                         android:orientation="horizontal">
+
                         <TextView
                             android:id="@+id/title_genre"
-                            android:textSize="14sp"
-                            android:textColor="@color/textColor_subtitles"
                             android:layout_width="0px"
-                            android:layout_weight="1"
                             android:layout_height="wrap_content"
-                            android:text="@string/genre_title" />
+                            android:layout_weight="1"
+                            android:text="@string/genre_title"
+                            android:textColor="@color/textColor_subtitles"
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/movie_genre"
-                            android:textSize="14sp"
-                            android:textColor="@color/textColor"
                             android:layout_width="0px"
-                            android:layout_weight="3"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
-                            android:text="TextView"/>
+                            android:layout_weight="3"
+                            android:text="TextView"
+                            android:textColor="@color/textColor"
+                            android:textSize="14sp" />
                     </LinearLayout>
+
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/divider"/>
+                        android:src="@drawable/divider" />
+
                     <TextView
                         android:id="@+id/movie_description"
-                        android:textSize="16sp"
-                        android:textColor="@color/textColor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
-                        android:text="TextView" />
+                        android:text="TextView"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/director_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
-                        android:textSize="20sp"
-                        android:textStyle="bold"
+                        android:text="@string/director_title"
                         android:textColor="@color/textColor"
-                        android:text="@string/director_title" />
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/movie_director"
-                        android:textColor="@color/textColor"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
                         android:layout_marginTop="16dp"
-                        android:text="TextView" />
+                        android:text="TextView"
+                        android:textColor="@color/textColor"
+                        android:textSize="16sp" />
 
                     <TextView
                         android:id="@+id/actors_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
-                        android:textSize="20sp"
+                        android:text="@string/actors_title"
                         android:textColor="@color/textColor"
-                        android:textStyle="bold"
-                        android:text="@string/actors_title" />
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/movie_actors"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:textSize="16sp"
+                        android:text="TextView"
                         android:textColor="@color/textColor"
-                        android:text="TextView" />
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="28dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/my_rating_title"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/my_rating_title"
+                            android:textColor="@color/textColor"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/my_rating_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="6"
+                            android:textColor="@color/textColor"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/rating_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text=" из 10"
+                            android:textColor="@color/textColor"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/my_rating_stars"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_filled"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_filled"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_filled"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_filled"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_filled"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_filled"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_empty"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_empty"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_empty"
+                            android:textSize="36sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:drawableStartCompat ="@drawable/star_rate_empty"
+                            android:textSize="36sp" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
                         android:orientation="horizontal">
+
                         <Button
                             android:id="@+id/liked_or_watched_button"
                             android:layout_width="0px"
-                            android:layout_weight="1.3"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1.3"
+                            android:background="@drawable/button_gradient"
                             android:textAllCaps="false"
-                            android:layout_marginBottom="15dp"
                             android:textColor="@color/white"
                             android:textSize="16sp"
-                            app:backgroundTint="@null"
-                            android:background="@drawable/button_gradient"/>
+                            app:backgroundTint="@null" />
                     </LinearLayout>
+
+                    <Button
+                        android:id="@+id/RecommendButton"
+                        style="?attr/gradientBorderButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginBottom="16dp"
+                        android:backgroundTint="@null"
+                        android:paddingHorizontal="32dp"
+                        android:text="@string/recommend_button"
+                        android:textAllCaps="false"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/liked_or_watched_button" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

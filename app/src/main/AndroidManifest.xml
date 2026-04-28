@@ -43,6 +43,9 @@
             android:name=".EditProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".FriendPublicProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".SignupActivity"
             android:exported="true">
             <intent-filter>

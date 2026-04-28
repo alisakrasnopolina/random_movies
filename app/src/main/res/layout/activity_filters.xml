@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ECECEC"
+    tools:context=".FilterFindMovieActivity">
+
+    <ImageButton
+        android:id="@+id/buttonBack"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/filters_back"
+        android:padding="8dp"
+        android:src="@drawable/back_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/textTitle"
+        style="@style/TextAppearance.Material3.HeadlineLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/filters_title"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textTitle">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/TextAppearance.Material3.HeadlineMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="24sp"
+                android:text="@string/filters_genre"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/genreSelector"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="2dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textGenreValue"
+                    style="@style/TextAppearance.Material3.TitleLarge"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:layout_weight="1"
+                    android:text="@string/filters_genre_value" />
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:contentDescription="@string/filters_choose_genre"
+                    android:src="@drawable/keyboard_arrow_down" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#1F000000" />
+
+            <com.google.android.material.textview.MaterialTextView
+                style="@style/TextAppearance.Material3.HeadlineMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:textSize="24sp"
+                android:text="@string/filters_country"
+                android:textStyle="bold" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/countryInputLayout"
+                style="@style/Widget.Material3.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:boxBackgroundColor="@android:color/transparent"
+                app:boxStrokeColor="#00000000"
+                app:startIconDrawable="@drawable/search_logo"
+                app:startIconTint="#5F5F5F">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editCountry"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/filters_country_hint"
+                    android:backgroundTint="#ECECEC"
+                    android:inputType="text"
+                    android:textColorHint="#7A7A7A" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#1F000000" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipsCountries"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                app:singleLine="false"
+                app:chipSpacingHorizontal="8dp"
+                app:chipSpacingVertical="8dp">
+
+                <com.google.android.material.chip.Chip
+                    style="@style/Widget.Material3.Chip.Assist"
+                    android:id="@+id/chipRussia"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:text="Россия"
+                    app:chipBackgroundColor="#F3F3F3"
+                    app:closeIconEnabled="true"
+                    app:closeIconTint="#B041F5" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextAppearance.Material3.HeadlineMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:layout_weight="1"
+                    android:text="@string/filters_year"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textYearRange"
+                    style="@style/TextAppearance.Material3.HeadlineSmall"
+                    android:layout_width="wrap_content"
+                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="1972 — 1996" />
+            </LinearLayout>
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/sliderYear"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:valueFrom="1950"
+                android:valueTo="2026"
+                android:values="1972,1996"
+                app:haloRadius="0dp"
+                app:thumbColor="#B041F5"
+                app:trackActiveTint="#B041F5"
+                app:trackInactiveTint="#BDBDBD" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextAppearance.Material3.TitleMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:layout_weight="1"
+                    android:text="1950"
+                    android:textColor="#6A6A6A" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextAppearance.Material3.TitleMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:text="2026"
+                    android:textColor="#6A6A6A" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextAppearance.Material3.HeadlineMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:layout_weight="1"
+                    android:text="@string/filters_rating"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/textRatingRange"
+                    style="@style/TextAppearance.Material3.HeadlineSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="5.0 — 10" />
+            </LinearLayout>
+
+            <com.google.android.material.slider.RangeSlider
+                android:id="@+id/sliderRating"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:valueFrom="0"
+                android:valueTo="10"
+                android:stepSize="0.5"
+                android:values="5,10"
+                app:haloRadius="0dp"
+                app:thumbColor="#B041F5"
+                app:trackActiveTint="#B041F5"
+                app:trackInactiveTint="#BDBDBD" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextAppearance.Material3.TitleMedium"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="14sp"
+                    android:text="0"
+                    android:textColor="#6A6A6A" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    style="@style/TextAppearance.Material3.TitleMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:text="10"
+                    android:textColor="#6A6A6A" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/buttonApplyFilters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="32dp"
+                android:layout_marginTop="32dp"
+                android:textSize="16sp"
+                android:textAllCaps="false"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:text="@string/filters_apply"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:backgroundTint="@null"
+                android:background="@drawable/button_gradient"
+                app:layout_constraintTop_toBottomOf="@+id/login_password" />
+
+            <Button
+                android:id="@+id/buttonResetFilters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:paddingHorizontal="32dp"
+                android:text="@string/filters_reset"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                style="?attr/gradientBorderButtonStyle"
+                android:backgroundTint="@null"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/RegistrationRedirectText2" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -40,8 +40,13 @@
     <string name="random_movie_title">Случайный</string>
     <string name="liked_movies_title">Избранное</string>
     <string name="home_title">Профиль</string>
+    <string name="with_friend_title">С другом</string>
+    <string name="advice_title">Советы</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- Strings used for random movie -->
+    <string name="random_title">Случайный фильм</string>
 
     <!-- Strings used for movie card -->
     <string name="country_title">Страна</string>
@@ -51,6 +56,9 @@
     <string name="actors_title">В главных ролях</string>
     <string name="recommendation_button">Рекомендовать</string>
     <string name="delete_button">Удалить</string>
+    <string name="filter_button">Настроить фильтры</string>
+    <string name="recommend_button">Посоветовать</string>
+    <string name="my_rating_title">Моя оценка</string>
 
     <!-- Strings used for liked movies -->
     <string name="liked_main_title">Избранное</string>
@@ -66,4 +74,65 @@ s
 
     <!-- Strings used for profile -->
     <string name="button_exit">Выйти</string>
+
+    <!-- Strings used for friends page -->
+    <string name="friends_title">Друзья</string>
+    <string name="friends_subtitle">Играйте с другими пользователями, чтобы совпадений было больше</string>
+    <string name="friends_search_hint">Найти по имени</string>
+    <string name="friends_back">Назад</string>
+    <string name="friends_name">Василий</string>
+    <string name="friends_match_amount">16 совпало</string>
+    <string name="friends_avatar_desc">Аватар пользователя</string>
+    <string name="friends_open_profile">Открыть профиль друга</string>
+
+    <!-- Strings used for friend movie vote page -->
+    <string name="friend_vote_step_prefix">Фильм</string>
+    <string name="friend_vote_step_suffix">из 10</string>
+    <string name="friend_vote_playing_with">Играем с пользователем</string>
+    <string name="friend_vote_user_avatar">Аватар текущего пользователя</string>
+    <string name="friend_vote_friend_avatar">Аватар друга</string>
+    <string name="friend_vote_movie_poster">Постер фильма</string>
+    <string name="friend_vote_add_to_favorites">Добавить в избранное</string>
+    <string name="friend_vote_dislike">Не нравится</string>
+    <string name="friend_vote_like">Нравится</string>
+
+    <!-- Strings used for filters page -->
+    <string name="filters_back">Назад</string>
+    <string name="filters_title">Фильтры</string>
+    <string name="filters_genre">Жанр</string>
+    <string name="filters_genre_value">Комедия</string>
+    <string name="filters_choose_genre">Выбрать жанр</string>
+    <string name="filters_country">Страна</string>
+    <string name="filters_country_hint">Введите</string>
+    <string name="filters_year">Год</string>
+    <string name="filters_rating">Рейтинг</string>
+    <string name="filters_apply">Подобрать фильм</string>
+    <string name="filters_reset">Сбросить все</string>
+
+    <!-- Strings used for friend result page -->
+    <string name="friend_result_title">Ваш результат</string>
+    <string name="friend_result_matches_prefix">Совпадений:</string>
+    <string name="friend_result_matches_suffix">из 10</string>
+    <string name="friend_result_player_1">Первый пользователь</string>
+    <string name="friend_result_player_2">Второй пользователь</string>
+
+    <!-- Strings used for tips page -->
+    <string name="tips_title">Советы</string>
+    <string name="tips_subtitle">Рекомендации других пользователей</string>
+    <string name="tips_movie_poster">Постер рекомендованного фильма</string>
+    <string name="tips_open">Открыть фильм</string>
+    <string name="tips_user_avatar">Аватар рекомендующего пользователя</string>
+
+    <!-- Strings used for profile page -->
+    <string name="profile_avatar">Аватар профиля</string>
+
+    <!-- Strings used for profile page -->
+    <string name="profile_movies">Фильмов</string>
+    <string name="profile_played">Сыграно</string>
+    <string name="profile_tips">Советов</string>
+    <string name="profile_all_with_arrow">Все →</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="unsubscribe">Отписаться</string>
 </resources>
+
+

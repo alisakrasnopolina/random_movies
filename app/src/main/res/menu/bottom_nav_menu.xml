@@ -5,11 +5,19 @@
         android:title="@string/random_movie_title"
         android:icon="@drawable/movie_random"/>
     <item
+        android:id="@+id/with_friend"
+        android:title="@string/with_friend_title"
+        android:icon="@drawable/with_friend"/>
+    <item
+        android:id="@+id/advice"
+        android:title="@string/advice_title"
+        android:icon="@drawable/advice_page"/>
+    <item
         android:id="@+id/liked_movies"
         android:title="@string/liked_movies_title"
         android:icon="@drawable/liked_movies"/>
     <item
         android:id="@+id/home"
         android:title="@string/home_title"
-        android:icon="@drawable/icon_user"/>
+        android:icon="@drawable/account_circle"/>
 </menu>
