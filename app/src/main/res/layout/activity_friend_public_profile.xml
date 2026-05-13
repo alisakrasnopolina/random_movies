@@ -4,22 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ECECEC"
+    android:background="?attr/colorSurface"
     tools:context=".FriendPublicProfileActivity">
-
-    <ImageButton
-        android:id="@+id/buttonBack"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:background="@android:color/transparent"
-        android:contentDescription="@string/friends_back"
-        android:onClick="onBackClick"
-        android:padding="8dp"
-        android:src="@drawable/back_arrow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
@@ -27,10 +13,10 @@
         android:fillViewport="true"
         android:paddingHorizontal="24dp"
         android:paddingTop="24dp"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,8 +38,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:text="Константин
-Длиннофамильцев"
+                android:text="Константин&#10;Длиннофамильцев"
+                android:textColor="?attr/colorOnSurface"
                 android:textStyle="bold" />
 
             <Button
@@ -61,17 +47,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
                 android:background="@drawable/button_gradient"
-                android:onClick="onSubscribeClick"
+                android:insetBottom="0dp"
+                android:insetTop="0dp"
+                android:tag="subscribed_false"
                 android:text="@string/subscribe"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:backgroundTint="@null"
-                app:cornerRadius="32dp"
-                android:tag="subscribed_false" />
+                app:cornerRadius="32dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -82,107 +67,135 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="120dp"
-                    android:layout_weight="1"
                     android:layout_marginEnd="4dp"
-                    app:cardCornerRadius="10dp">
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardCornerRadius="10dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeWidth="1dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
+
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/theaters"
-                            android:textSize="28sp"
-                            android:textColor="#B041F5"/>
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="28sp" />
+
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/TextAppearance.Material3.TitleMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
                             android:text="Фильмов"
-                            android:textColor="#5F5F5F"/>
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
+
                         <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/publicWatchedCountText"
                             style="@style/TextAppearance.Material3.HeadlineMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="24sp"
                             android:text="182"
-                            android:textStyle="bold"/>
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="120dp"
-                    android:layout_weight="1"
                     android:layout_marginHorizontal="4dp"
-                    app:cardCornerRadius="10dp">
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardCornerRadius="10dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeWidth="1dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
+
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/people_alt_color"
-                            android:textSize="28sp"
-                            android:textColor="#B041F5"/>
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="28sp" />
+
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/TextAppearance.Material3.TitleMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
                             android:text="Сыграно"
-                            android:textColor="#5F5F5F"/>
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
+
                         <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/publicFriendSessionsCountText"
                             style="@style/TextAppearance.Material3.HeadlineMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="24sp"
                             android:text="29"
-                            android:textStyle="bold"/>
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="120dp"
-                    android:layout_weight="1"
                     android:layout_marginStart="4dp"
-                    app:cardCornerRadius="10dp">
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardCornerRadius="10dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeWidth="1dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
+
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/advice_color"
-                            android:textSize="28sp"
-                            android:textColor="#B041F5"/>
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="28sp" />
+
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/TextAppearance.Material3.TitleMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
                             android:text="Советов"
-                            android:textColor="#5F5F5F"/>
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
+
                         <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/publicRecommendationsCountText"
                             style="@style/TextAppearance.Material3.HeadlineMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="24sp"
                             android:text="2"
-                            android:textStyle="bold"/>
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/openAllFriendsButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="26dp"
@@ -195,118 +208,51 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Друзья"
+                    android:textColor="?attr/colorOnSurface"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/TextAppearance.Material3.TitleLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Все"
                     android:paddingEnd="6dp"
+                    android:text="Все"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
+                    android:contentDescription="@string/tips_open"
                     android:src="@drawable/arrow_right"
-                    android:contentDescription="@string/tips_open" />
+                    app:tint="?attr/colorOnSurfaceVariant" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/publicFriendsPreviewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="122dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
-                    app:cardCornerRadius="10dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/icon_user"
-                            android:contentDescription="@string/friend_result_player_1"/>
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleLarge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:textSize="16sp"
-                            android:text="Василий Иванов"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="122dp"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="4dp"
-                    app:cardCornerRadius="10dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/icon_user"
-                            android:contentDescription="@string/friend_result_player_2"/>
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleLarge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:textSize="16sp"
-                            android:text="Мать-наседка-..."
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="122dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="4dp"
-                    app:cardCornerRadius="10dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/icon_user"
-                            android:contentDescription="@string/friends_avatar_desc"/>
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleLarge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:textSize="16sp"
-                            android:text="Маша"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+                android:orientation="horizontal" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <ImageButton
+        android:id="@+id/buttonBack"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/friends_back"
+        android:elevation="12dp"
+        android:padding="12dp"
+        android:src="@drawable/back_arrow"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSurface" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

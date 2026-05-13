@@ -106,8 +106,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/clock"
-                    android:text="TextView"
-                    android:layout_marginTop="10dp" />
+                    android:drawablePadding="4dp"
+                    android:layout_marginTop="10dp"
+                    android:text="—" />
 
                 <TextView
                     android:id="@+id/movie_rate"
@@ -115,10 +116,23 @@
                     android:textColor="@color/textColor_subtitles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:layout_marginTop="10dp"
                     android:drawableLeft="@drawable/star"
-                    android:text="TextView" />
+                    android:drawablePadding="4dp"
+                    android:text="—" />
+
+                <TextView
+                    android:id="@+id/my_movie_rate"
+                    android:textSize="14sp"
+                    android:textColor="@color/textColor_subtitles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="10dp"
+                    android:drawableLeft="@drawable/star_rate_filled_small"
+                    android:drawablePadding="4dp"
+                    android:text="—" />
 
                 <Space
                     android:layout_width="0dp"

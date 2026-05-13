@@ -4,6 +4,8 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.example.random_movie.BuildConfig;
+import com.example.random_movie.auth.ApiClient;
 import com.example.random_movie.data.local.AppDatabase;
 import com.example.random_movie.data.local.dao.PendingActionDao;
 import com.example.random_movie.data.local.dao.WatchedDao;
@@ -11,9 +13,15 @@ import com.example.random_movie.data.local.entity.PendingActionEntity;
 import com.example.random_movie.data.local.entity.WatchedEntity;
 import com.example.random_movie.sync.SyncScheduler;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class WatchedRepository {
 
@@ -33,6 +41,11 @@ public class WatchedRepository {
 
     public interface IdsCallback {
         void onResult(List<Integer> ids);
+        void onError(String message);
+    }
+
+    public interface RatingCallback {
+        void onResult(int rating);
         void onError(String message);
     }
 
@@ -124,8 +137,81 @@ public class WatchedRepository {
         });
     }
 
+    public void getRating(@NonNull String userId, int movieId, @NonNull RatingCallback callback) {
+        io.execute(() -> {
+            try {
+                int rating = watchedDao.getRating(userId, movieId);
+                callback.onResult(rating);
+            } catch (Exception e) {
+                callback.onError(e.getMessage() != null ? e.getMessage() : "Get watched rating failed");
+            }
+        });
+    }
+
+    public void updateRating(@NonNull String userId, int movieId, int rating, @NonNull VoidCallback callback) {
+        io.execute(() -> {
+            try {
+                watchedDao.updateRating(userId, movieId, rating);
+                callback.onDone();
+            } catch (Exception e) {
+                callback.onError(e.getMessage() != null ? e.getMessage() : "Update watched rating failed");
+            }
+        });
+    }
+
     public interface IsWatchedCallback {
         void onResult(boolean watched);
         void onError(String message);
+    }
+
+    public void syncWatchedFromServer(@NonNull String userId, @NonNull VoidCallback callback) {
+        io.execute(() -> {
+            try {
+                Request request = new Request.Builder()
+                        .url(BuildConfig.API_BASE_URL + "/users/me/watched")
+                        .get()
+                        .addHeader("accept", "application/json")
+                        .build();
+
+                try (Response response = ApiClient.get(appContext).newCall(request).execute()) {
+                    String raw = response.body() != null ? response.body().string() : "{}";
+
+                    if (!response.isSuccessful()) {
+                        throw new RuntimeException("HTTP " + response.code() + ": " + raw);
+                    }
+
+                    JSONObject obj = new JSONObject(raw);
+                    JSONArray items = obj.optJSONArray("items");
+
+                    if (items != null) {
+                        for (int i = 0; i < items.length(); i++) {
+                            int movieId = items.optInt(i, 0);
+                            if (movieId <= 0) continue;
+
+                            int oldRating = 0;
+
+                            try {
+                                oldRating = watchedDao.getRating(userId, movieId);
+                            } catch (Exception ignored) {
+                                oldRating = 0;
+                            }
+
+                            WatchedEntity entity = new WatchedEntity();
+                            entity.userId = userId;
+                            entity.movieId = movieId;
+                            entity.watchedAt = System.currentTimeMillis();
+                            entity.synced = true;
+                            entity.userRating = oldRating;
+
+                            watchedDao.insert(entity);
+                        }
+                    }
+
+                    callback.onDone();
+                }
+            } catch (Exception e) {
+                callback.onError(e.getMessage() != null ? e.getMessage() : "Sync watched failed");
+            }
+        });
     }
 }

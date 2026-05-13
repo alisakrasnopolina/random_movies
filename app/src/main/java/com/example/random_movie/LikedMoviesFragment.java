@@ -48,6 +48,20 @@ public class LikedMoviesFragment extends Fragment {
             return;
         }
 
+        favoritesRepository.syncFavoritesFromServer(userId, new FavoritesRepository.VoidCallback() {
+            @Override
+            public void onDone() {
+                loadLikedMoviesFromLocal(userId);
+            }
+
+            @Override
+            public void onError(String message) {
+                loadLikedMoviesFromLocal(userId);
+            }
+        });
+    }
+
+    private void loadLikedMoviesFromLocal(String userId) {
         favoritesRepository.getFavoriteIds(userId, new FavoritesRepository.IdsCallback() {
             @Override
             public void onResult(List<Integer> ids) {

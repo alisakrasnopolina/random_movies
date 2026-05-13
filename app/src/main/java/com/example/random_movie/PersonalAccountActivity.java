@@ -7,32 +7,13 @@ import android.os.Bundle;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class PersonalAccountActivity extends AppCompatActivity {
+public class PersonalAccountActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_personal_account);
+        setContentView(R.layout.activity_profile);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.home);
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.random_movie) {
-                startActivity(new Intent(getApplicationContext(), FindRandomMovie.class));
-                finish();
-                return true;
-            }
-            else if(item.getItemId() == R.id.liked_movies) {
-                startActivity(new Intent(getApplicationContext(), LikedMoviesActivity.class));
-                finish();
-                return true;
-            }
-            else if(item.getItemId() == R.id.home) {
-                return true;
-            } else {
-                return false;
-            }
-        });
+        NavigationBar.setup(this, R.id.home);
     }
 }

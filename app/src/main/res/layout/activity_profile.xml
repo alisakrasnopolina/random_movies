@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ECECEC"
+    android:background="?attr/colorSurface"
     tools:context=".MainActivity">
 
     <androidx.core.widget.NestedScrollView
@@ -22,15 +22,17 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/profileAvatar"
                 android:layout_width="120dp"
                 android:layout_height="120dp"
-                android:src="@drawable/icon_user"
-                android:contentDescription="@string/profile_avatar" />
+                android:clickable="true"
+                android:contentDescription="@string/profile_avatar"
+                android:focusable="true"
+                android:src="@drawable/icon_user" />
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/profileName"
@@ -38,19 +40,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:textSize="32sp"
                 android:gravity="center"
                 android:text="Константин Длиннофамильцев"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="32sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/profileEmail"
                 style="@style/TextAppearance.Material3.TitleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textSize="16sp"
                 android:text="konstantind@mail.ru"
-                android:textColor="#6F6F6F" />
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -61,110 +65,140 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="120dp"
-                    android:layout_weight="1"
                     android:layout_marginEnd="4dp"
-                    app:cardCornerRadius="10dp">
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardCornerRadius="10dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeWidth="1dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
+
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/theaters"
-                            android:textSize="28sp"
-                            android:textColor="#B041F5"/>
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="28sp" />
+
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/TextAppearance.Material3.TitleMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
                             android:text="Фильмов"
-                            android:textColor="#5F5F5F"/>
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
+
                         <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/watchedCountText"
                             style="@style/TextAppearance.Material3.HeadlineMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="24sp"
                             android:text="182"
-                            android:textStyle="bold"/>
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="120dp"
-                    android:layout_weight="1"
                     android:layout_marginHorizontal="4dp"
-                    app:cardCornerRadius="10dp">
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardCornerRadius="10dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeWidth="1dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
+
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/people_alt_color"
-                            android:textSize="28sp"
-                            android:textColor="#B041F5"/>
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="28sp" />
+
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/TextAppearance.Material3.TitleMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
                             android:text="Сыграно"
-                            android:textColor="#5F5F5F"/>
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
+
                         <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/friendSessionsCountText"
                             style="@style/TextAppearance.Material3.HeadlineMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="24sp"
                             android:text="29"
-                            android:textStyle="bold"/>
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="0dp"
                     android:layout_height="120dp"
-                    android:layout_weight="1"
                     android:layout_marginStart="4dp"
-                    app:cardCornerRadius="10dp">
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardCornerRadius="10dp"
+                    app:strokeColor="?attr/colorOutlineVariant"
+                    app:strokeWidth="1dp">
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:gravity="center"
+                        android:orientation="vertical">
+
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/advice_color"
-                            android:textSize="28sp"
-                            android:textColor="#B041F5"/>
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="28sp" />
+
                         <com.google.android.material.textview.MaterialTextView
                             style="@style/TextAppearance.Material3.TitleMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="14sp"
                             android:text="Советов"
-                            android:textColor="#5F5F5F"/>
+                            android:textColor="?attr/colorOnSurfaceVariant"
+                            android:textSize="14sp" />
+
                         <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/recommendationsCountText"
                             style="@style/TextAppearance.Material3.HeadlineMedium"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="24sp"
                             android:text="2"
-                            android:textStyle="bold"/>
+                            android:textColor="?attr/colorOnSurface"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/openAllFriendsButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="26dp"
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -174,116 +208,32 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Друзья"
+                    android:textColor="?attr/colorOnSurface"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/TextAppearance.Material3.TitleLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Все"
                     android:paddingEnd="6dp"
+                    android:text="Все"
+                    android:textColor="?attr/colorOnSurfaceVariant"
                     android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
+                    android:contentDescription="@string/tips_open"
                     android:src="@drawable/arrow_right"
-                    android:contentDescription="@string/tips_open" />
+                    app:tint="?attr/colorOnSurfaceVariant" />
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/friendsPreviewContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="122dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="4dp"
-                    app:cardCornerRadius="10dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/icon_user"
-                            android:contentDescription="@string/friend_result_player_1"/>
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleLarge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:textSize="16sp"
-                            android:text="Василий Иванов"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="122dp"
-                    android:layout_weight="1"
-                    android:layout_marginHorizontal="4dp"
-                    app:cardCornerRadius="10dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/icon_user"
-                            android:contentDescription="@string/friend_result_player_2"/>
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleLarge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:textSize="16sp"
-                            android:text="Мать-наседка-..."
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="122dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="4dp"
-                    app:cardCornerRadius="10dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:src="@drawable/icon_user"
-                            android:contentDescription="@string/friends_avatar_desc"/>
-                        <com.google.android.material.textview.MaterialTextView
-                            style="@style/TextAppearance.Material3.TitleLarge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:textSize="16sp"
-                            android:text="Маша"
-                            android:maxLines="1"
-                            android:ellipsize="end"
-                            android:textStyle="bold"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-            </LinearLayout>
+                android:orientation="horizontal" />
 
             <Button
                 android:id="@+id/edit_button"
@@ -303,35 +253,32 @@
 
             <Button
                 android:id="@+id/exit_button"
+                style="?attr/gradientBorderButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="32dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="40dp"
-                style="?attr/gradientBorderButtonStyle"
+                android:paddingHorizontal="32dp"
                 android:text="@string/button_exit"
                 android:textAllCaps="false"
                 android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
                 app:layout_constraintEnd_toEndOf="@id/edit_button"
                 app:layout_constraintStart_toStartOf="@id/edit_button"
-                app:layout_constraintTop_toBottomOf="@id/edit_button"
-                app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"/>
+                app:layout_constraintTop_toBottomOf="@id/edit_button" />
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white"
-        app:itemActiveIndicatorColor="#EBD9FF"
-        app:itemIconTint="@color/navigation_item_color"
-        app:itemTextColor="@color/navigation_item_color"
-        app:labelVisibilityMode="labeled"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

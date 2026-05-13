@@ -10,7 +10,7 @@ import android.widget.TableLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.tabs.TabLayout;
 
-public class LikedMoviesActivity extends AppCompatActivity {
+public class LikedMoviesActivity extends BaseActivity {
 
     TabLayout tabLayout;
     ViewPager2 viewPager2;
@@ -20,8 +20,8 @@ public class LikedMoviesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_liked_movies);
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.liked_movies);
+
+        NavigationBar.setup(this, R.id.liked_movies);
 
         tabLayout = findViewById(R.id.tabLayout);
         viewPager2 = findViewById(R.id.viewPager);
@@ -50,24 +50,6 @@ public class LikedMoviesActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 super.onPageSelected(position);
                 tabLayout.getTabAt(position).select();
-            }
-        });
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.random_movie) {
-                startActivity(new Intent(getApplicationContext(), FindRandomMovie.class));
-                finish();
-                return true;
-            }
-            else if(item.getItemId() == R.id.liked_movies) {
-                return true;
-            }
-            else if(item.getItemId() == R.id.home) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
-                finish();
-                return true;
-            } else {
-                return false;
             }
         });
     }

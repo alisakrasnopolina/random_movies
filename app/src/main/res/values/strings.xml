@@ -100,7 +100,7 @@ s
     <string name="filters_back">Назад</string>
     <string name="filters_title">Фильтры</string>
     <string name="filters_genre">Жанр</string>
-    <string name="filters_genre_value">Комедия</string>
+    <string name="filters_genre_value">Все</string>
     <string name="filters_choose_genre">Выбрать жанр</string>
     <string name="filters_country">Страна</string>
     <string name="filters_country_hint">Введите</string>
@@ -133,6 +133,12 @@ s
     <string name="profile_all_with_arrow">Все →</string>
     <string name="subscribe">Подписаться</string>
     <string name="unsubscribe">Отписаться</string>
+
+    <!-- Strings used for invite dialog -->
+    <string name="invite_dialog_title">Приглашение</string>
+    <string name="invite_dialog_message">Пользователь приглашает вас выбрать фильм вместе</string>
+    <string name="invite_dialog_accept">Согласиться</string>
+    <string name="invite_dialog_decline">Отклонить</string>
 </resources>
 
 

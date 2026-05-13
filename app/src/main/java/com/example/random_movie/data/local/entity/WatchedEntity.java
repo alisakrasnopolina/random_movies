@@ -13,4 +13,5 @@ public class WatchedEntity {
     public int movieId;
     public long watchedAt;
     public boolean synced;
+    public int userRating = 0;
 }

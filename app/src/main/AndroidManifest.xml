@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:networkSecurityConfig="@xml/network_security_config"
-        android:usesCleartextTraffic="false"
+        android:usesCleartextTraffic="true"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -43,28 +43,44 @@
             android:name=".EditProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".FriendsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TipsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WaitingFriendActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".FriendInviteDialogActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Random_movie.InviteDialog" />
+
+        <activity
+            android:name=".FriendMovieVoteActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".FriendResultActivity"
+            android:exported="false" />
+        <activity
             android:name=".FriendPublicProfileActivity"
             android:exported="false" />
         <activity
             android:name=".SignupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".MainActivity"
-            android:exported="false">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.intent.action.MAIN" /> -->
-
-
-            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
-            <!-- </intent-filter> -->
-        </activity>
+            android:exported="false"/>
     </application>
 
 

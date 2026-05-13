@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="year_slider_values">
+        <item>1950</item>
+        <item>2026</item>
+    </array>
+
+    <array name="rating_slider_values">
+        <item>0</item>
+        <item>10</item>
+    </array>
+</resources>

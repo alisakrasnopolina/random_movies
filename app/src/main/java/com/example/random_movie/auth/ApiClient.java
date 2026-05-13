@@ -12,9 +12,9 @@ public class ApiClient {
     public static OkHttpClient get(Context context) {
         if (instance == null) {
             instance = new OkHttpClient.Builder()
-                    .connectTimeout(20, TimeUnit.SECONDS)
-                    .readTimeout(20, TimeUnit.SECONDS)
-                    .writeTimeout(20, TimeUnit.SECONDS)
+                    .connectTimeout(30, TimeUnit.SECONDS)
+                    .readTimeout(60, TimeUnit.SECONDS)
+                    .writeTimeout(40, TimeUnit.SECONDS)
                     .addInterceptor(new AuthInterceptor(context))
                     .authenticator(new TokenAuthenticator(context))
                     .build();

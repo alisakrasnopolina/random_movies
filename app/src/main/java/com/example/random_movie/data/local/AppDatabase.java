@@ -27,7 +27,7 @@ import com.example.random_movie.data.local.entity.WatchedEntity;
                 WatchedEntity.class,
                 PendingActionEntity.class
         },
-        version = 2,
+        version = 3,
         exportSchema = false
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -73,6 +73,14 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    public static final Migration MIGRATION_2_3 = new Migration(2, 3) {
+        @Override
+        public void migrate(SupportSQLiteDatabase db) {
+            db.execSQL("ALTER TABLE `favorites` ADD COLUMN `userRating` INTEGER NOT NULL DEFAULT 0");
+            db.execSQL("ALTER TABLE `watched` ADD COLUMN `userRating` INTEGER NOT NULL DEFAULT 0");
+        }
+    };
+
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
@@ -82,7 +90,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                     AppDatabase.class,
                                     "random_movies.db"
                             )
-                            .addMigrations(MIGRATION_1_2)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                             // Для dev можно оставить, для прод лучше убрать
                             .fallbackToDestructiveMigration()
                             .build();

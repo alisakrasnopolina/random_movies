@@ -18,7 +18,8 @@
         android:padding="8dp"
         android:src="@drawable/back_arrow"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSurface" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textTitle"
@@ -42,10 +43,10 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:gravity="center"
-        android:textSize="16sp"
         android:paddingHorizontal="24dp"
         android:text="@string/friends_subtitle"
         android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textTitle" />
@@ -57,8 +58,8 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="24dp"
-        app:boxBackgroundColor="@android:color/transparent"
-        app:boxStrokeColor="?attr/colorOutline"
+        app:boxBackgroundColor="?attr/colorSurface"
+        app:boxStrokeColor="?attr/colorOutlineVariant"
         app:endIconMode="none"
         app:startIconDrawable="@drawable/search_logo"
         app:startIconTint="?attr/colorOnSurfaceVariant"
@@ -71,9 +72,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/friends_search_hint"
-            android:textSize="16sp"
             android:inputType="textPersonName"
-            android:paddingVertical="14dp" />
+            android:paddingVertical="14dp"
+            android:textColor="?attr/colorOnSurface"
+            android:textColorHint="?attr/colorOnSurfaceVariant"
+            android:textSize="16sp" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -92,71 +95,23 @@
         app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
+            android:id="@+id/friendsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <com.google.android.material.card.MaterialCardView
-                style="@style/Widget.Material3.CardView.Elevated"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:cardCornerRadius="8dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:minHeight="72dp"
-                    android:orientation="horizontal"
-                    android:padding="12dp">
-
-                    <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:contentDescription="@string/friends_avatar_desc"
-                        android:src="@drawable/icon_user" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <com.google.android.material.textview.MaterialTextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/friends_name"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
-
-                        <!--                        <com.google.android.material.textview.MaterialTextView-->
-                        <!--                            android:layout_width="wrap_content"-->
-                        <!--                            android:layout_height="wrap_content"-->
-                        <!--                            android:text="@string/friends_match_amount"-->
-                        <!--                            android:textColor="?attr/colorOnSurfaceVariant"-->
-                        <!--                            android:textSize="14sp" />-->
-                    </LinearLayout>
-
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:contentDescription="@string/friends_open_profile"
-                        android:src="@drawable/arrow_right" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:menu="@menu/bottom_nav_menu"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_alignParentBottom="true"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:menu="@menu/bottom_nav_menu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

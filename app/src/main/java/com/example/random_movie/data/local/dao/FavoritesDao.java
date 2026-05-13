@@ -22,4 +22,10 @@ public interface FavoritesDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM favorites WHERE userId = :userId AND movieId = :movieId)")
     boolean exists(String userId, int movieId);
+
+    @Query("SELECT userRating FROM favorites WHERE userId = :userId AND movieId = :movieId LIMIT 1")
+    int getRating(String userId, int movieId);
+
+    @Query("UPDATE favorites SET userRating = :rating WHERE userId = :userId AND movieId = :movieId")
+    void updateRating(String userId, int movieId, int rating);
 }

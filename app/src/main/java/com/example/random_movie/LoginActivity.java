@@ -185,6 +185,9 @@ public class LoginActivity extends AppCompatActivity {
 
             RequestBody body = RequestBody.create(bodyJson.toString(), JSON_MEDIA);
 
+            android.util.Log.d("Login", "API_BASE_URL = " + BuildConfig.API_BASE_URL);
+            android.util.Log.d("Login", "login url = " + BuildConfig.API_BASE_URL + "/auth/login");
+
             Request request = new Request.Builder()
                     .url(BuildConfig.API_BASE_URL + "/auth/login")
                     .post(body)
@@ -201,9 +204,15 @@ public class LoginActivity extends AppCompatActivity {
                  */
                 @Override
                 public void onFailure(Call call, IOException e) {
+                    android.util.Log.e("Login", "login failed", e);
+
                     runOnUiThread(() -> {
                         setLoading(false);
-                        Toast.makeText(LoginActivity.this, "Проверьте интернет", Toast.LENGTH_LONG).show();
+                        Toast.makeText(
+                                LoginActivity.this,
+                                "Проверьте интернет: " + e.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show();
                     });
                 }
 
@@ -235,9 +244,11 @@ public class LoginActivity extends AppCompatActivity {
                                 String userId = user.optString("id", "");
                                 String email = user.optString("email", "");
                                 String displayName = user.optString("display_name", "");
+                                String avatarUrl = user.optString("avatar_url", "");
 
                                 sessionManager.saveTokens(accessToken, refreshToken);
                                 sessionManager.saveUser(userId, email, displayName);
+                                sessionManager.saveAvatarUrl(avatarUrl);
 
                                 com.example.random_movie.sync.SyncScheduler.enqueuePeriodic(getApplicationContext());
                                 com.example.random_movie.sync.SyncScheduler.enqueueOneTime(getApplicationContext());

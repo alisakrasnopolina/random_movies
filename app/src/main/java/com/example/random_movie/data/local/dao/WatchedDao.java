@@ -23,4 +23,10 @@ public interface WatchedDao {
 
     @Query("SELECT EXISTS(SELECT 1 FROM watched WHERE userId = :userId AND movieId = :movieId)")
     boolean exists(String userId, int movieId);
+
+    @Query("SELECT userRating FROM watched WHERE userId = :userId AND movieId = :movieId LIMIT 1")
+    int getRating(String userId, int movieId);
+
+    @Query("UPDATE watched SET userRating = :rating WHERE userId = :userId AND movieId = :movieId")
+    void updateRating(String userId, int movieId, int rating);
 }

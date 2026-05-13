@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#ECECEC"
+    android:background="?attr/colorSurface"
     tools:context=".FilterFindMovieActivity">
 
     <ImageButton
@@ -18,7 +18,8 @@
         android:padding="8dp"
         android:src="@drawable/back_arrow"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?attr/colorOnSurface" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textTitle"
@@ -27,8 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:text="@string/filters_title"
+        android:textColor="?attr/colorOnSurface"
         android:textStyle="bold"
-        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -55,8 +56,9 @@
                 style="@style/TextAppearance.Material3.HeadlineMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="24sp"
                 android:text="@string/filters_genre"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -72,29 +74,32 @@
                     style="@style/TextAppearance.Material3.TitleLarge"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
                     android:layout_weight="1"
-                    android:text="@string/filters_genre_value" />
+                    android:text="@string/filters_genre_value"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="16sp" />
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:contentDescription="@string/filters_choose_genre"
-                    android:src="@drawable/keyboard_arrow_down" />
+                    android:src="@drawable/keyboard_arrow_down"
+                    app:tint="?attr/colorOnSurfaceVariant" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#1F000000" />
+                android:background="?attr/colorOutlineVariant" />
 
             <com.google.android.material.textview.MaterialTextView
                 style="@style/TextAppearance.Material3.HeadlineMedium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:textSize="24sp"
                 android:text="@string/filters_country"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
@@ -103,47 +108,36 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:boxBackgroundColor="@android:color/transparent"
-                app:boxStrokeColor="#00000000"
+                app:boxBackgroundColor="?attr/colorSurface"
+                app:boxStrokeColor="?attr/colorOutlineVariant"
+                app:hintTextColor="?attr/colorOnSurfaceVariant"
                 app:startIconDrawable="@drawable/search_logo"
-                app:startIconTint="#5F5F5F">
+                app:startIconTint="?attr/colorOnSurfaceVariant">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editCountry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
                     android:hint="@string/filters_country_hint"
-                    android:backgroundTint="#ECECEC"
                     android:inputType="text"
-                    android:textColorHint="#7A7A7A" />
+                    android:textColor="?attr/colorOnSurface"
+                    android:textColorHint="?attr/colorOnSurfaceVariant" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="#1F000000" />
+                android:background="?attr/colorOutlineVariant" />
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipsCountries"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                app:singleLine="false"
                 app:chipSpacingHorizontal="8dp"
-                app:chipSpacingVertical="8dp">
-
-                <com.google.android.material.chip.Chip
-                    style="@style/Widget.Material3.Chip.Assist"
-                    android:id="@+id/chipRussia"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:text="Россия"
-                    app:chipBackgroundColor="#F3F3F3"
-                    app:closeIconEnabled="true"
-                    app:closeIconTint="#B041F5" />
-
-            </com.google.android.material.chip.ChipGroup>
+                app:chipSpacingVertical="8dp"
+                app:singleLine="false" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -156,31 +150,33 @@
                     style="@style/TextAppearance.Material3.HeadlineMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp"
                     android:layout_weight="1"
                     android:text="@string/filters_year"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/textYearRange"
                     style="@style/TextAppearance.Material3.HeadlineSmall"
                     android:layout_width="wrap_content"
-                    android:textSize="20sp"
                     android:layout_height="wrap_content"
-                    android:text="1972 — 1996" />
+                    android:text="1972 — 1996"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/sliderYear"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:stepSize="1"
                 android:valueFrom="1950"
                 android:valueTo="2026"
-                android:values="1972,1996"
+                app:haloColor="?attr/colorPrimary"
                 app:haloRadius="0dp"
-                app:thumbColor="#B041F5"
-                app:trackActiveTint="#B041F5"
-                app:trackInactiveTint="#BDBDBD" />
+                app:thumbColor="?attr/colorPrimary"
+                app:values="@array/year_slider_values" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -192,18 +188,18 @@
                     style="@style/TextAppearance.Material3.TitleMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
                     android:layout_weight="1"
                     android:text="1950"
-                    android:textColor="#6A6A6A" />
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="14sp" />
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/TextAppearance.Material3.TitleMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
                     android:text="2026"
-                    android:textColor="#6A6A6A" />
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -217,9 +213,10 @@
                     style="@style/TextAppearance.Material3.HeadlineMedium"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textSize="24sp"
                     android:layout_weight="1"
                     android:text="@string/filters_rating"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
 
                 <com.google.android.material.textview.MaterialTextView
@@ -227,22 +224,22 @@
                     style="@style/TextAppearance.Material3.HeadlineSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="20sp"
-                    android:text="5.0 — 10" />
+                    android:text="5.0 — 10"
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="20sp" />
             </LinearLayout>
 
             <com.google.android.material.slider.RangeSlider
                 android:id="@+id/sliderRating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:stepSize="0.5"
                 android:valueFrom="0"
                 android:valueTo="10"
-                android:stepSize="0.5"
-                android:values="5,10"
+                app:haloColor="?attr/colorPrimary"
                 app:haloRadius="0dp"
-                app:thumbColor="#B041F5"
-                app:trackActiveTint="#B041F5"
-                app:trackInactiveTint="#BDBDBD" />
+                app:thumbColor="?attr/colorPrimary"
+                app:values="@array/rating_slider_values" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -255,17 +252,17 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:textSize="14sp"
                     android:text="0"
-                    android:textColor="#6A6A6A" />
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="14sp" />
 
                 <com.google.android.material.textview.MaterialTextView
                     style="@style/TextAppearance.Material3.TitleMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
                     android:text="10"
-                    android:textColor="#6A6A6A" />
+                    android:textColor="?attr/colorOnSurfaceVariant"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <Button

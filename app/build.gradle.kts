@@ -76,4 +76,6 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel:2.8.4")
 
     implementation("androidx.work:work-runtime:2.9.1")
+
+    implementation("androidx.exifinterface:exifinterface:1.3.7")
 }

@@ -3,7 +3,7 @@ import threading
 import time
 from datetime import timedelta
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends, Request, Header
 from jose import JWTError
 from sqlalchemy.orm import Session
 
@@ -181,7 +181,8 @@ def login(payload: LoginRequest, request: Request, db: Session = Depends(get_db)
         "user": {
             "id": str(user.id),
             "email": user.email,
-            "display_name": display_name,
+            "display_name": user.profile.display_name if user.profile else user.email,
+            "avatar_url": user.profile.avatar_url if user.profile else None,
         },
     }
 
@@ -314,3 +315,39 @@ def logout_all(payload: LogoutRequest, request: Request, db: Session = Depends(g
 
     logger.info("logout_all_ok rid=%s user_id=%s count=%s", rid, user_id, len(active_sessions))
     return {"message": "logged out_all"}
+
+def get_current_user(
+        authorization: str | None = Header(default=None),
+        db: Session = Depends(get_db),
+) -> User:
+    """
+    Возвращает текущего пользователя по access token из заголовка Authorization.
+
+    Ожидаемый заголовок:
+    Authorization: Bearer <access_token>
+    """
+    if not authorization or not authorization.startswith("Bearer "):
+        to_user_error("not_authenticated", "Not authenticated", status_code=401)
+
+    token = authorization.replace("Bearer ", "", 1).strip()
+
+    try:
+        claims = decode_token(token)
+    except JWTError:
+        to_user_error("invalid_token", "Invalid access token", status_code=401)
+
+    if claims.get("type") != "access":
+        to_user_error("invalid_token_type", "Token type must be access", status_code=401)
+
+    user_id = claims.get("sub")
+    if not user_id:
+        to_user_error("malformed_token", "Access token payload is invalid", status_code=401)
+
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        to_user_error("user_not_found", "User not found", status_code=401)
+
+    if not user.is_active:
+        to_user_error("user_inactive", "User is inactive", status_code=403)
+
+    return user

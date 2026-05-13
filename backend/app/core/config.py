@@ -48,6 +48,8 @@ class Settings(BaseSettings):
     KINOPOISK_API_KEY: str
     """Ключ подключения для API ПоискКино."""
 
+    PUBLIC_BASE_URL: str = "http://127.0.0.1:8000"
+
 
 settings = Settings()
 """

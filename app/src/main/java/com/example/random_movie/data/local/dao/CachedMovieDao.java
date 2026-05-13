@@ -17,4 +17,7 @@ public interface CachedMovieDao {
 
     @Query("SELECT * FROM cached_movies ORDER BY updatedAt DESC LIMIT 1")
     CachedMovieEntity getLastMovie();
+
+    @Query("SELECT * FROM cached_movies ORDER BY RANDOM() LIMIT 1")
+    CachedMovieEntity getRandomAny();
 }

@@ -7,6 +7,12 @@ from fastapi.responses import JSONResponse
 from app.api.v1.auth import router as auth_router
 from app.api.v1.movies import router as movies_router
 from app.api.v1.users_me_movies import router as users_me_movies_router
+from app.api.v1 import profile
+from app.api.v1 import friends
+from app.api.v1 import recommendations
+from app.api.v1 import friend_sessions
+
+from fastapi.staticfiles import StaticFiles
 
 """
 Главный модуль FastAPI-приложения.
@@ -29,9 +35,15 @@ app = FastAPI(title="Random Movies Backend", version="0.2.0")
 Экземпляр FastAPI-приложения.
 """
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.include_router(auth_router)
 app.include_router(movies_router)
 app.include_router(users_me_movies_router)
+app.include_router(profile.router)
+app.include_router(friends.router)
+app.include_router(recommendations.router)
+app.include_router(friend_sessions.router)
 
 
 @app.middleware("http")

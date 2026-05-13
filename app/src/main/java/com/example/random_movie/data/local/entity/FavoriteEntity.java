@@ -13,4 +13,5 @@ public class FavoriteEntity {
     public int movieId;
     public long createdAt;
     public boolean synced; // локально/на сервер отправлено
+    public int userRating = 0;
 }

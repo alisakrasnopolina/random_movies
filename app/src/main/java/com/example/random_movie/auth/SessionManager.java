@@ -39,6 +39,8 @@ public class SessionManager {
     /** Экземпляр SharedPreferences. */
     private final SharedPreferences prefs;
 
+    private static final String KEY_AVATAR_URL = "avatar_url";
+
     /**
      * @brief Создает менеджер сессии.
      *
@@ -144,5 +146,15 @@ public class SessionManager {
      */
     public void clearSession() {
         prefs.edit().clear().apply();
+    }
+
+    public void saveAvatarUrl(String avatarUrl) {
+        prefs.edit()
+                .putString(KEY_AVATAR_URL, avatarUrl)
+                .apply();
+    }
+
+    public String getAvatarUrl() {
+        return prefs.getString(KEY_AVATAR_URL, "");
     }
 }

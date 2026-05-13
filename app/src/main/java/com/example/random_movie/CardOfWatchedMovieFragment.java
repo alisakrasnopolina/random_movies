@@ -114,6 +114,7 @@ public class CardOfWatchedMovieFragment extends Fragment {
                         TextView movieYearTextView = movieCardView.findViewById(R.id.movie_year);
                         TextView movieLengthTextView = movieCardView.findViewById(R.id.movie_length);
                         TextView movieRateTextView = movieCardView.findViewById(R.id.movie_rate);
+                        TextView myMovieRateTextView = movieCardView.findViewById(R.id.my_movie_rate);
                         ShapeableImageView movieImage = movieCardView.findViewById(R.id.image_card_watched);
                         ImageButton deleteButton = movieCardView.findViewById(R.id.delete_button);
 
@@ -128,6 +129,52 @@ public class CardOfWatchedMovieFragment extends Fragment {
                         movieLengthTextView.setText(String.valueOf(length));
                         movieRateTextView.setText(String.valueOf(ratingImdb));
 
+                        if (myMovieRateTextView != null) {
+                            myMovieRateTextView.setText("—");
+                        }
+
+                        String userId = sessionManager.getUserId();
+
+                        if (userId != null && !userId.trim().isEmpty()) {
+                            int movieIdInt;
+
+                            try {
+                                movieIdInt = Integer.parseInt(movieIdFinal);
+                            } catch (Exception e) {
+                                movieIdInt = 0;
+                            }
+
+                            if (movieIdInt > 0) {
+                                watchedRepository.getRating(userId, movieIdInt, new WatchedRepository.RatingCallback() {
+                                    @Override
+                                    public void onResult(int rating) {
+                                        if (!isAdded()) return;
+
+                                        requireActivity().runOnUiThread(() -> {
+                                            if (myMovieRateTextView == null) return;
+
+                                            if (rating > 0) {
+                                                myMovieRateTextView.setText(String.valueOf(rating));
+                                            } else {
+                                                myMovieRateTextView.setText("—");
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onError(String message) {
+                                        if (!isAdded()) return;
+
+                                        requireActivity().runOnUiThread(() -> {
+                                            if (myMovieRateTextView != null) {
+                                                myMovieRateTextView.setText("—");
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        }
+
                         movieCardView.setOnClickListener(v -> {
                             Intent intent = new Intent(getActivity(), MovieCardActivity.class);
                             intent.putExtra("id", movieIdFinal);
@@ -136,8 +183,9 @@ public class CardOfWatchedMovieFragment extends Fragment {
                         });
 
                         deleteButton.setOnClickListener(v -> {
-                            String userId = sessionManager.getUserId();
-                            if (userId == null || userId.isEmpty()) {
+                            String currentUserId = sessionManager.getUserId();
+
+                            if (currentUserId == null || currentUserId.isEmpty()) {
                                 Toast.makeText(requireContext(), "Пользователь не авторизован", Toast.LENGTH_LONG).show();
                                 return;
                             }
@@ -150,7 +198,7 @@ public class CardOfWatchedMovieFragment extends Fragment {
                                 return;
                             }
 
-                            watchedRepository.removeWatched(userId, movieIdInt, new WatchedRepository.VoidCallback() {
+                            watchedRepository.removeWatched(currentUserId, movieIdInt, new WatchedRepository.VoidCallback() {
                                 @Override
                                 public void onDone() {
                                     if (!isAdded()) return;

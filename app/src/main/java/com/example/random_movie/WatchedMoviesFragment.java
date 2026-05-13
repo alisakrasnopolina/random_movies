@@ -48,13 +48,30 @@ public class WatchedMoviesFragment extends Fragment {
             return;
         }
 
+        watchedRepository.syncWatchedFromServer(userId, new WatchedRepository.VoidCallback() {
+            @Override
+            public void onDone() {
+                loadWatchedMoviesFromLocal(userId);
+            }
+
+            @Override
+            public void onError(String message) {
+                // Если backend недоступен, всё равно показываем то, что уже есть локально
+                loadWatchedMoviesFromLocal(userId);
+            }
+        });
+    }
+
+    private void loadWatchedMoviesFromLocal(String userId) {
         watchedRepository.getWatchedIds(userId, new WatchedRepository.IdsCallback() {
             @Override
             public void onResult(List<Integer> ids) {
                 if (!isAdded()) return;
 
                 ArrayList<String> idStrings = new ArrayList<>();
-                for (Integer i : ids) idStrings.add(String.valueOf(i));
+                for (Integer i : ids) {
+                    idStrings.add(String.valueOf(i));
+                }
 
                 Bundle args = new Bundle();
                 args.putStringArrayList("movieIds", idStrings);
